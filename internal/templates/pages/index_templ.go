@@ -12,8 +12,10 @@ import "bytes"
 
 import "github.com/kctjohnson/mid-blog/internal/templates/utils"
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
+import "github.com/kctjohnson/mid-blog/internal/db/models"
+import "fmt"
 
-func Index() templ.Component {
+func IndexNavbar() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -26,52 +28,133 @@ func Index() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var2 := templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"sm:col-span-2 flex justify-between p-2 items-center\" style=\"border-bottom: 1px solid black\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = components.Logo().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"hidden sm:block mr-1\"><a href=\"/\" class=\"p-1 text-sm\">Our Story</a> <a href=\"/\" class=\"p-1 text-sm\">Membership</a> <a href=\"/\" class=\"p-1 text-sm\">Write</a> <a href=\"/\" class=\"p-1 text-sm\">Sign In</a></div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if !templ_7745c5c3_IsBuffer {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func Index(posts []models.Post) templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+		if !templ_7745c5c3_IsBuffer {
+			templ_7745c5c3_Buffer = templ.GetBuffer()
+			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var2 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var2 == nil {
+			templ_7745c5c3_Var2 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Var3 := templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 			if !templ_7745c5c3_IsBuffer {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"grid grid-cols-1 sm:grid-cols-2 bg-yellow-500 pl-5 pr-5\" style=\"border-bottom: 1px solid black\"><div class=\"sm:col-span-2 flex justify-between p-2 items-center\" style=\"border-bottom: 1px solid black\"><div class=\"flex flex-row items-center\"><svg width=\"32px\" height=\"32px\" viewBox=\"0 0 400.00 400.00\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" transform=\"rotate(0)\"><g id=\"SVGRepo_bgCarrier\" stroke-width=\"0\"></g><g id=\"SVGRepo_tracerCarrier\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke=\"#CCCCCC\" stroke-width=\"4.8\"></g><g id=\"SVGRepo_iconCarrier\"><path d=\"M158.783 198.955C157.097 201.69 145.845 209.598 136.799 220.027C127.746 230.464 120.899 243.421 119.571 245.87C118.576 247.701 117.544 249.503 116.507 251.301C115.504 247.934 114.432 244.597 113.307 241.276C111.287 235.321 109.301 229.35 107.117 223.475C106.205 221.022 105.351 218.52 104.349 216.11C102.979 212.828 101.612 209.542 100.242 206.26C98.8071 202.811 97.1396 199.508 95.543 196.162C94.9044 194.817 94.313 193.415 93.6026 192.119C92.4303 189.974 91.2545 187.83 90.0787 185.684C87.0316 180.116 83.6896 174.813 80.2663 169.575C79.8193 167.668 79.003 165.876 77.8176 164.517C77.7214 164.404 77.6225 164.293 77.5272 164.184C76.9777 163.535 66.9009 164.803 60.4397 162.727C53.3515 160.449 49.8169 154.834 49 154.562\" stroke=\"#000000\" stroke-opacity=\"0.9\" stroke-width=\"27.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path> <path d=\"M233.435 195.765C236.108 196.761 238.882 197.708 241.177 199.412C243.56 201.183 245.902 202.947 248.027 205.01C249.792 206.722 251.469 208.513 253.034 210.397C254.803 212.528 256.613 214.656 258.24 216.887L265.028 226.208C267.208 229.2 269.392 232.187 271.571 235.174C273.074 237.234 274.704 239.215 276.31 241.205C276.146 240.999 275.983 240.795 275.818 240.589C277.915 242.98 279.986 245.376 282.208 247.663C284.305 249.819 286.496 251.879 288.726 253.91C290.47 255.502 292.222 257.083 294.007 258.63C298.009 249 302.106 239.414 306.445 229.915C310.482 221.077 314.647 212.3 318.672 203.458C320.515 198.84 322.32 194.227 323.982 189.542C324.853 187.09 325.7 184.631 326.606 182.192C327.058 180.968 327.51 179.745 328.029 178.541C328.902 176.521 329.616 174.39 331.285 172.819C336.318 172.094 340.093 171.245 342.61 170.273C345.128 169.302 348.257 167.485 352 164.822\" stroke=\"#000000\" stroke-opacity=\"0.9\" stroke-width=\"27.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path> <path d=\"M159 198.534C158.99 203.392 158.802 208.254 158.342 213.096C158.039 216.281 157.74 219.466 157.382 222.648C156.644 229.208 162.631 289.451 162.631 292.293C162.631 294.561 162.436 296.82 162.164 299.075C162.084 299.604 162.009 300.134 161.935 300.664C161.901 300.906 161.866 301.152 161.897 301.395C161.9 302.381 162.144 303.312 162.633 304.179\" stroke=\"#000000\" stroke-opacity=\"0.9\" stroke-width=\"27.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path> <path d=\"M233.435 195.603C234.013 197.539 234.65 199.49 235.054 201.45C235.461 203.427 245.266 289.893 246.069 293.682C246.35 295.989 246.614 298.28 246.609 300.597C246.604 301.907 246.594 303.213 246.561 304.522C246.547 305.351 246.514 306.171 246.571 307\" stroke=\"#000000\" stroke-opacity=\"0.9\" stroke-width=\"27.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path> <path d=\"M167.39 113.123C177.684 99.7706 190.783 89.942 208.737 93.8759C259.333 104.96 249.601 183.198 199.55 186.722C159.023 189.577 143.861 120.535 176.578 110.858\" stroke=\"#000000\" stroke-opacity=\"0.9\" stroke-width=\"27.2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></path></g></svg><h1 class=\"text-2xl font-bold ml-1\">Mid</h1></div><div class=\"hidden mr-1 sm:block\"><a href=\"/\" class=\"p-1 text-sm\">Our Story</a> <a href=\"/\" class=\"p-1 text-sm\">Membership</a> <a href=\"/\" class=\"p-1 text-sm\">Write</a> <a href=\"/\" class=\"p-1 text-sm\">Sign In</a></div></div><div class=\"flex justify-center items-center\"><div class=\"grid grid-rows-3 sm:grid-rows-4 pt-8 sm:pt-0\"><h1 class=\"text-4xl font-bold text-center\">Stay Mediocre, Go Somewhere</h1><p class=\"text-2xl text-center sm:text-left\">Find AI generated blog posts on any topic.</p><div class=\"row-span-2 justify-self-center self-end sm:justify-self-start\"><button class=\"btn rounded-full bg-black border-black text-white hover:bg-gray-800 mt-4\">Start Reading</button></div></div></div><p class=\"p-8 text-center\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"grid grid-cols-1 sm:grid-cols-2 bg-yellow-500 pl-5 pr-5\" style=\"border-bottom: 1px solid black\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var3 string
-			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(utils.WordGenerator.Sentences(6))
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 29, Col: 64}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
+			templ_7745c5c3_Err = IndexNavbar().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div><div class=\"pt-8 pb-4 px-40\"><div class=\"flex flex-row items-center pb-4\"><svg width=\"28\" height=\"29\" viewBox=\"0 0 28 29\" fill=\"none\" class=\"ji ah\"><path fill=\"#fff\" d=\"M0 .8h28v28H0z\"></path> <g opacity=\"0.8\" clip-path=\"url(#trending_svg__clip0)\"><path fill=\"#fff\" d=\"M4 4.8h20v20H4z\"></path> <circle cx=\"14\" cy=\"14.79\" r=\"9.5\" stroke=\"#000\"></circle> <path d=\"M5.46 18.36l4.47-4.48M9.97 13.87l3.67 3.66M13.67 17.53l5.1-5.09M16.62 11.6h3M19.62 11.6v3\" stroke=\"#000\" stroke-linecap=\"round\"></path></g> <defs><clipPath id=\"trending_svg__clip0\"><path fill=\"#fff\" transform=\"translate(4 4.8)\" d=\"M0 0h20v20H0z\"></path></clipPath></defs></svg><p class=\"text-sm font-semibold\">Trending on Mid</p></div><div class=\"grid grid-cols-1 sm:grid-cols-3 gap-5 justify-items-center\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex justify-center items-center\"><div class=\"grid grid-rows-3 sm:grid-rows-4 pt-8 sm:pt-0\"><h1 class=\"text-4xl font-bold text-center\">Stay Mediocre, Go Somewhere</h1><p class=\"text-2xl text-center sm:text-left\">Find AI generated blog posts on any topic.</p><div class=\"row-span-2 justify-self-center sm:justify-self-start self-end\"><button class=\"btn rounded-full bg-black border-black text-white hover:bg-gray-800 mt-4\">Start Reading</button></div></div></div><p class=\"p-8 text-center\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = utils.SkeletonPostCard().Render(ctx, templ_7745c5c3_Buffer)
+			var templ_7745c5c3_Var4 string
+			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(utils.WordGenerator.Sentences(6))
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 32, Col: 64}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = utils.SkeletonPostCard().Render(ctx, templ_7745c5c3_Buffer)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div><div class=\"pt-8 pb-4 px-40\"><div class=\"flex flex-row items-center pb-4\"><svg width=\"28\" height=\"29\" viewBox=\"0 0 28 29\" fill=\"none\" class=\"ji ah\"><path fill=\"#fff\" d=\"M0 .8h28v28H0z\"></path> <g opacity=\"0.8\" clip-path=\"url(#trending_svg__clip0)\"><path fill=\"#fff\" d=\"M4 4.8h20v20H4z\"></path> <circle cx=\"14\" cy=\"14.79\" r=\"9.5\" stroke=\"#000\"></circle> <path d=\"M5.46 18.36l4.47-4.48M9.97 13.87l3.67 3.66M13.67 17.53l5.1-5.09M16.62 11.6h3M19.62 11.6v3\" stroke=\"#000\" stroke-linecap=\"round\"></path></g> <defs><clipPath id=\"trending_svg__clip0\"><path fill=\"#fff\" transform=\"translate(4 4.8)\" d=\"M0 0h20v20H0z\"></path></clipPath></defs></svg><p class=\"text-sm font-semibold whitespace-nowrap\">Trending on Mid</p></div><div class=\"grid grid-cols-1 sm:grid-cols-3 gap-5 justify-items-center\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = utils.SkeletonPostCard().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = utils.SkeletonPostCard().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = utils.SkeletonPostCard().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = utils.SkeletonPostCard().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
+			for _, post := range posts {
+				if post.Likes-post.Dislikes >= 0 {
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var5 string
+					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 54, Col: 21}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var6 string
+					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d 👍", post.Likes-post.Dislikes))
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 54, Col: 76}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				} else {
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var7 string
+					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 56, Col: 21}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var8 string
+					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d 👎", post.Likes-post.Dislikes))
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 56, Col: 76}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
 			if templ_7745c5c3_Err != nil {
@@ -82,7 +165,7 @@ func Index() templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = components.Layout("MidBlog").Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.Layout("MidBlog").Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
