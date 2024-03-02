@@ -1,0 +1,35 @@
+{
+  "name": "Mid Blog",
+  "version": "0.0.0",
+  "description": "Stay Mediocre, Go Somewhere!",
+  "license": "MIT",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "source": [
+    "./assets/scripts.js",
+    "./assets/styles.scss"
+  ],
+  "targets": {
+    "default": {
+      "distDir": "./internal/templates/static"
+    }
+  },
+  "scripts": {
+    "watch": "parcel watch",
+    "fmt": "prettier --write .",
+    "dev": "parcel build --no-optimize",
+    "build": "parcel build"
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "latest",
+    "htmx.org": "latest",
+    "hyperscript.org": "latest",
+    "tailwindcss": "latest"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "latest",
+    "daisyui": "^4.7.2",
+    "parcel": "^2.12.0",
+    "postcss": "latest",
+    "prettier": "latest"
+  }
+}
