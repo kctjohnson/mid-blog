@@ -21,11 +21,11 @@ templ Posts(posts []models.Post) {
 					<tr id={ "post-row-" + strconv.Itoa(post.ID) }>
 						<td>{ strconv.Itoa(post.ID) }</td>
 						<td>
-							@components.NavLink("/admin/bloggers/"+strconv.Itoa(post.BloggerID), post.Blogger.FirstName+" "+post.Blogger.LastName)
+							@components.Link("/admin/bloggers/"+strconv.Itoa(post.BloggerID), post.Blogger.FirstName+" "+post.Blogger.LastName)
 						</td>
 						<td>{ post.CreateDate.Format("2006-01-02") }</td>
 						<td>
-							@components.NavLink("/admin/posts/"+strconv.Itoa(post.ID), post.Title)
+							@components.Link("/admin/posts/"+strconv.Itoa(post.ID), post.Title)
 						</td>
 						<td>{ strconv.Itoa(post.Likes) }</td>
 						<td>{ strconv.Itoa(post.Dislikes) }</td>
@@ -46,7 +46,7 @@ templ Post(post models.Post) {
 			<p>{ strconv.Itoa(post.Likes) }</p>
 			<p>{ strconv.Itoa(post.Dislikes) }</p>
 			<p>{ post.CreateDate.Format("2006-01-02") }</p>
-			@components.NavLink("/admin/bloggers/"+strconv.Itoa(post.BloggerID), post.Blogger.FirstName+" "+post.Blogger.LastName)
+			@components.Link("/admin/bloggers/"+strconv.Itoa(post.BloggerID), post.Blogger.FirstName+" "+post.Blogger.LastName)
 		</div>
 	}
 }

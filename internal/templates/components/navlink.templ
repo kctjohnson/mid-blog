@@ -1,5 +1,9 @@
 package components
 
 templ NavLink(ref string, text string) {
-	<a href={ templ.SafeURL(ref) } class="p-1 text-sm hover:drop-shadow transition-shadow">{ text }</a>
+	<a href={ templ.SafeURL(ref) } class="p-1 text-sm hover:font-bold transition-all underline">{ text }</a>
+}
+
+templ Link(ref string, text string) {
+	<a href={ templ.SafeURL(ref) } class="p-1 text-sm hover:drop-shadow-lg transition underline">{ text }</a>
 }
