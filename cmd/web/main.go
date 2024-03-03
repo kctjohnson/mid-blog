@@ -2,14 +2,17 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/kctjohnson/mid-blog/internal/config"
 	"github.com/kctjohnson/mid-blog/internal/db"
+	"github.com/kctjohnson/mid-blog/internal/db/models"
 	"github.com/kctjohnson/mid-blog/internal/db/repos"
 	"github.com/kctjohnson/mid-blog/internal/templates"
+	"github.com/kctjohnson/mid-blog/internal/templates/utils"
 )
 
 type Application struct {
@@ -59,6 +62,12 @@ func (app Application) StartServer() error {
 		r.Get("/bloggers/{id}", app.AdminBlogger)
 		r.Get("/users", app.AdminUsers)
 		r.Get("/users/{id}", app.AdminUser)
+
+		r.Delete("/posts/{id}", app.DeletePost)
+		r.Delete("/bloggers/{id}", app.DeleteBlogger)
+		r.Delete("/users/{id}", app.DeleteUser)
+
+		r.Get("/testcreate", app.CreateStuff)
 	})
 
 	fmt.Println("Listening on :4231")
@@ -67,4 +76,50 @@ func (app Application) StartServer() error {
 	}
 
 	return nil
+}
+
+func (app Application) CreateStuff(w http.ResponseWriter, r *http.Request) {
+	me, err := app.UserRepo.Insert(repos.UserInsertParameters{
+		Username: utils.WordGenerator.Word(),
+		Password: utils.WordGenerator.Word(),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	kris, err := app.BloggerRepo.Insert(repos.BloggerInsertParameters{
+		FirstName: utils.WordGenerator.Word(),
+		LastName:  utils.WordGenerator.Word(),
+		Email: fmt.Sprintf(
+			"%s_%s@mid.com",
+			utils.WordGenerator.Word(),
+			utils.WordGenerator.Word(),
+		),
+		Age:    rand.Int()%75 + 15,
+		Gender: models.Male,
+		Bio:    utils.WordGenerator.Sentence(),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	post, err := app.PostRepo.Insert(repos.PostInsertParameters{
+		BloggerID: kris.ID,
+		Title:     utils.WordGenerator.Words(5),
+		Content:   utils.WordGenerator.Paragraphs(3),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	_, err = app.CommentRepo.Insert(repos.CommentInsertParameters{
+		UserID:  me.ID,
+		PostID:  post.ID,
+		Content: utils.WordGenerator.Sentences(2),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	w.Write([]byte("Created stuff!"))
 }

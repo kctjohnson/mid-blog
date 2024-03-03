@@ -140,6 +140,28 @@ func (app Application) AdminPost(w http.ResponseWriter, r *http.Request) {
 	admin.Post(*post).Render(r.Context(), w)
 }
 
+func (app Application) DeletePost(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		http.Error(w, "id is required", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = app.PostRepo.Delete(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/admin/posts", http.StatusSeeOther)
+}
+
 func (app Application) AdminBloggers(w http.ResponseWriter, r *http.Request) {
 	bloggers, err := app.BloggerRepo.All()
 	if err != nil {
@@ -170,6 +192,28 @@ func (app Application) AdminBlogger(w http.ResponseWriter, r *http.Request) {
 	}
 
 	admin.Blogger(*blogger).Render(r.Context(), w)
+}
+
+func (app Application) DeleteBlogger(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		http.Error(w, "id is required", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = app.BloggerRepo.Delete(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/admin/bloggers", http.StatusSeeOther)
 }
 
 func (app Application) AdminUsers(w http.ResponseWriter, r *http.Request) {
@@ -212,4 +256,26 @@ func (app Application) AdminUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	admin.User(*user).Render(r.Context(), w)
+}
+
+func (app Application) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		http.Error(w, "id is required", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = app.UserRepo.Delete(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
 }

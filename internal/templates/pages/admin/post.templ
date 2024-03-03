@@ -37,7 +37,9 @@ templ Posts(posts []models.Post) {
 									<li>
 										<a href={ templ.SafeURL("/admin/posts/" + strconv.Itoa(post.ID)) }>View</a>
 									</li>
-									<li><a>Delete</a></li>
+									<li>
+										<a hx-delete={ "/admin/posts/" + strconv.Itoa(post.ID) } hx-target={ "#post-row-" + strconv.Itoa(post.ID) } hx-swap="delete">Delete</a>
+									</li>
 								</ul>
 							</div>
 						</td>

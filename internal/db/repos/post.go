@@ -155,3 +155,20 @@ func (r PostRepository) Update(updatePost PostUpdateParameters) (*models.Post, e
 
 	return found, nil
 }
+
+func (r PostRepository) Delete(id int) error {
+	query, args, err := sq.
+		Delete(models.Post{}.TableString()).
+		Where(sq.Eq{"id": id}).
+		ToSql()
+	if err != nil {
+		return err
+	}
+
+	_, err = r.db.Exec(query, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

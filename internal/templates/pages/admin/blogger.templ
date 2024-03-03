@@ -33,7 +33,9 @@ templ Bloggers(bloggers []models.Blogger) {
 									<li>
 										<a href={ templ.SafeURL("/admin/bloggers/" + strconv.Itoa(blogger.ID)) }>View</a>
 									</li>
-									<li><a>Delete</a></li>
+									<li>
+										<a hx-delete={ "/admin/bloggers/" + strconv.Itoa(blogger.ID) } hx-target={ "#blogger-row-" + strconv.Itoa(blogger.ID) } hx-swap="delete">Delete</a>
+									</li>
 								</ul>
 							</div>
 						</td>

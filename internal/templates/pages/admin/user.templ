@@ -27,7 +27,9 @@ templ Users(users []models.User) {
 									<li>
 										<a href={ templ.SafeURL("/admin/users/" + strconv.Itoa(user.ID)) }>View</a>
 									</li>
-									<li><a>Delete</a></li>
+									<li>
+										<a hx-delete={ "/admin/users/" + strconv.Itoa(user.ID) } hx-target={ "#user-row-" + strconv.Itoa(user.ID) } hx-swap="delete">Delete</a>
+									</li>
 								</ul>
 							</div>
 						</td>
