@@ -1,11 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/kctjohnson/mid-blog/internal/templates/pages"
+	"github.com/kctjohnson/mid-blog/internal/db/repos"
 	"github.com/kctjohnson/mid-blog/internal/templates/pages/admin"
 	"github.com/kctjohnson/mid-blog/internal/templates/pages/public"
 )
@@ -25,7 +26,7 @@ func (app Application) Index(w http.ResponseWriter, r *http.Request) {
 		posts[i].Blogger = blogger
 	}
 
-	pages.Index(posts).Render(r.Context(), w)
+	public.Index(posts).Render(r.Context(), w)
 }
 
 func (app Application) Post(w http.ResponseWriter, r *http.Request) {
@@ -71,6 +72,70 @@ func (app Application) Post(w http.ResponseWriter, r *http.Request) {
 	}
 
 	public.Post(*post, comments).Render(r.Context(), w)
+}
+
+func (app Application) LikePost(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		http.Error(w, "id is required", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	post, err := app.PostRepo.FindByID(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	newLikes := post.Likes + 1
+	post, err = app.PostRepo.Update(repos.PostUpdateParameters{
+		ID:    post.ID,
+		Likes: &newLikes,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(fmt.Sprintf("%d", post.Likes-post.Dislikes)))
+}
+
+func (app Application) DislikePost(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		http.Error(w, "id is required", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	post, err := app.PostRepo.FindByID(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	newDislikes := post.Dislikes + 1
+	post, err = app.PostRepo.Update(repos.PostUpdateParameters{
+		ID:       post.ID,
+		Dislikes: &newDislikes,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(fmt.Sprintf("%d", post.Likes-post.Dislikes)))
 }
 
 func (app Application) Admin(w http.ResponseWriter, r *http.Request) {

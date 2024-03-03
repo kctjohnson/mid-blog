@@ -54,6 +54,11 @@ func (app Application) StartServer() error {
 	r.Get("/", app.Index)
 	r.Get("/{id}", app.Post)
 
+	r.Route("/api", func(r chi.Router) {
+		r.Post("/posts/{id}/like", app.LikePost)
+		r.Post("/posts/{id}/dislike", app.DislikePost)
+	})
+
 	r.Route("/admin", func(r chi.Router) {
 		r.Get("/", app.Admin)
 		r.Get("/posts", app.AdminPosts)
