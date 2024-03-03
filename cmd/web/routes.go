@@ -518,3 +518,11 @@ func (app Application) CreatePostRandom(w http.ResponseWriter, r *http.Request) 
 
 	admin.RandomPostLink(post.ID, post.Title).Render(r.Context(), w)
 }
+
+func (app Application) LoginPage(w http.ResponseWriter, r *http.Request) {
+	public.Login().Render(r.Context(), w)
+}
+
+func (app Application) RegisterPage(w http.ResponseWriter, r *http.Request) {
+	public.Register().Render(r.Context(), w)
+}

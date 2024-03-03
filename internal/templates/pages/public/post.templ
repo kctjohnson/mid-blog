@@ -5,20 +5,6 @@ import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "strings"
 import "strconv"
 
-templ PostNavbar() {
-	<div class="bg-yellow-500 px-5 drop-shadow-md" style="border-bottom: 1px solid black">
-		<div class="flex justify-between p-2 items-center">
-			@components.Logo()
-			<div class="hidden sm:block mr-1">
-				@components.NavLink("/", "Our Story")
-				@components.NavLink("/", "Membership")
-				@components.NavLink("/", "Write")
-				@components.NavLink("/", "Sign In")
-			</div>
-		</div>
-	</div>
-}
-
 templ PostContent(post models.Post) {
 	<div class="w-full flex flex-col items-center pt-8 px-4">
 		<div class="prose flex flex-col items-center">
@@ -73,7 +59,7 @@ templ CommentsSection(comments []models.Comment) {
 templ Post(post models.Post, comments []models.Comment) {
 	@components.Layout("MidBlog - " + post.Title) {
 		<div>
-			@PostNavbar()
+			@components.Navbar()
 			@PostContent(post)
 			@PostStats(post)
 			@CommentsSection(comments)

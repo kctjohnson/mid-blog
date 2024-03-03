@@ -5,18 +5,6 @@ import "github.com/kctjohnson/mid-blog/internal/db/models"
 import "strings"
 import "strconv"
 
-templ IndexNavbar() {
-	<div class="sm:col-span-2 flex justify-between p-2 items-center" style="border-bottom: 1px solid black">
-		@components.Logo()
-		<div class="hidden sm:block mr-1">
-			@components.NavLink("/", "Our Story")
-			@components.NavLink("/", "Membership")
-			@components.NavLink("/", "Write")
-			@components.NavLink("/", "Sign In")
-		</div>
-	</div>
-}
-
 templ PostCard(post models.Post) {
 	<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow w-full h-full flex flex-col items-center py-4">
 		<div class="flex flex-row items-center m-1">
@@ -42,7 +30,7 @@ templ PostCard(post models.Post) {
 templ Index(posts []models.Post) {
 	@components.Layout("MidBlog") {
 		<div class="grid grid-cols-1 sm:grid-cols-2 bg-yellow-500 pl-5 pr-5" style="border-bottom: 1px solid black">
-			@IndexNavbar()
+			@components.IndexNavbar()
 			<div class="flex justify-center items-center">
 				<div class="grid grid-rows-3 sm:grid-rows-4 pt-8 sm:pt-0">
 					<h1 class="text-4xl font-bold text-center">Stay Mediocre, Go Somewhere</h1>
