@@ -1,11 +1,16 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
+	"strings"
+	"sync"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/kctjohnson/mid-blog/internal/db/models"
 	"github.com/kctjohnson/mid-blog/internal/db/repos"
 	"github.com/kctjohnson/mid-blog/internal/templates/pages/admin"
 	"github.com/kctjohnson/mid-blog/internal/templates/pages/public"
@@ -343,4 +348,173 @@ func (app Application) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
+}
+
+func (app Application) InitializeBloggers(w http.ResponseWriter, r *http.Request) {
+	var wg sync.WaitGroup
+
+	// Make 5 AI bloggers
+	fmt.Println("Creating bloggers...")
+	for i := 0; i < 5; i++ {
+		wg.Add(1)
+		go func() {
+			firstNameResp, err := app.BloggerAI.SimpleSend(
+				context.Background(),
+				"In one word, give me a random first name.",
+			)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			firstName := firstNameResp.Choices[0].Message.Content
+
+			lastNameResp, err := app.BloggerAI.SimpleSend(
+				context.Background(),
+				"In one word, give me a random last name.",
+			)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			lastName := lastNameResp.Choices[0].Message.Content
+
+			emailResp, err := app.BloggerAI.SimpleSend(
+				context.Background(),
+				"I need to make a new email, give me a random email name.",
+			)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			email := fmt.Sprintf("%s@mid.com", emailResp.Choices[0].Message.Content)
+
+			age := rand.Int()%45 + 15
+
+			var gender models.Gender
+			randGenderInt := rand.Intn(2)
+			if randGenderInt == 0 {
+				gender = models.Male
+			} else {
+				gender = models.Female
+			}
+
+			bioResp, err := app.BloggerAI.SimpleSend(
+				context.Background(),
+				"Write me a random bio that is AT MAX 255 characters long.",
+			)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			bio := bioResp.Choices[0].Message.Content
+
+			_, err = app.BloggerRepo.Insert(repos.BloggerInsertParameters{
+				FirstName: firstName,
+				LastName:  lastName,
+				Email:     email,
+				Age:       age,
+				Gender:    gender,
+				Bio:       bio,
+			})
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+	fmt.Println("Created bloggers!")
+
+	// Make 1 post per blogger
+	bloggers, err := app.BloggerRepo.All()
+	if err != nil {
+		return
+	}
+
+	fmt.Println("Creating posts...")
+	for _, blogger := range bloggers {
+		wg.Add(1)
+		go func(b models.Blogger) {
+			titleResp, err := app.BloggerAI.SimpleSend(
+				context.Background(),
+				"Generate me the title of an article about absolutely anything (Tech, science, literary, political, etc.). Try to keep it around 5-8 words.",
+			)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			title := strings.ReplaceAll(titleResp.Choices[0].Message.Content, "\"", "")
+
+			contentResp, err := app.BloggerAI.SimpleSend(
+				context.Background(),
+				"Write me a 5 paragraph article about this title \""+title+"\"",
+			)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			content := contentResp.Choices[0].Message.Content
+
+			_, err = app.PostRepo.Insert(repos.PostInsertParameters{
+				BloggerID: b.ID,
+				Title:     title,
+				Content:   content,
+			})
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+			wg.Done()
+		}(blogger)
+	}
+	wg.Wait()
+	fmt.Println("Created posts!")
+
+	w.Write([]byte("Created stuff!"))
+}
+
+func (app Application) CreatePostRandom(w http.ResponseWriter, r *http.Request) {
+	// Get the bloggers
+	bloggers, err := app.BloggerRepo.All()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Get a random blogger
+	blogger := bloggers[rand.Intn(len(bloggers))]
+
+	// Get a random title
+	titleResp, err := app.BloggerAI.SimpleSend(
+		context.Background(),
+		"Generate me the title of an article about absolutely anything (Tech, science, literary, political, etc.). Try to keep it around 5-8 words.",
+	)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	title := strings.ReplaceAll(titleResp.Choices[0].Message.Content, "\"", "")
+
+	contentResp, err := app.BloggerAI.SimpleSend(
+		context.Background(),
+		"Write me a 5 paragraph article about this title \""+title+"\"",
+	)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	content := contentResp.Choices[0].Message.Content
+
+	post, err := app.PostRepo.Insert(repos.PostInsertParameters{
+		BloggerID: blogger.ID,
+		Title:     title,
+		Content:   content,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	admin.RandomPostLink(post.ID, post.Title).Render(r.Context(), w)
 }

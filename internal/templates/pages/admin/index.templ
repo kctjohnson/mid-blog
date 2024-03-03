@@ -1,6 +1,11 @@
 package admin
 
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
+import "strconv"
+
+templ RandomPostLink(postID int, postTitle string) {
+	<a href={ templ.SafeURL("/" + strconv.Itoa(postID)) }>{ postTitle }</a>
+}
 
 templ Index() {
 	@components.Layout("Admin") {
@@ -8,6 +13,11 @@ templ Index() {
 		<div class="prose p-8">
 			<h1>Admin Panel</h1>
 			<p>Manage all of the things here</p>
+		</div>
+		<div class="pl-8">
+			<button class="btn" hx-post="/admin/createpostrand" hx-target="#new-post-link" hx-swap="outerHTML" hx-indicator="#loading-post">Create Random Post</button>
+			<p id="loading-post" class="htmx-indicator">Loading...</p>
+			<a id="new-post-link" class="hidden">Waiting for post to be generated...</a>
 		</div>
 	}
 }
