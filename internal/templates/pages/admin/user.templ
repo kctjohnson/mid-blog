@@ -26,5 +26,13 @@ templ Users(users []models.User) {
 	}
 }
 
-templ User() {
+templ User(user models.User) {
+	@components.Layout("Admin - Post") {
+		@Navbar()
+		<div class="p-8">
+			<p>{ strconv.Itoa(user.ID) }</p>
+			<p>{ user.Username }</p>
+			<p>{ user.CreateDate.Format("2006-01-02") }</p>
+		</div>
+	}
 }

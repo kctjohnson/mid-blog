@@ -4,14 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/kctjohnson/mid-blog/internal/config"
 	"github.com/kctjohnson/mid-blog/internal/db"
 	"github.com/kctjohnson/mid-blog/internal/db/repos"
 	"github.com/kctjohnson/mid-blog/internal/templates"
-	ut "github.com/kctjohnson/mid-blog/internal/templates/utils"
 )
 
 type Application struct {
@@ -56,11 +54,11 @@ func (app Application) StartServer() error {
 	r.Route("/admin", func(r chi.Router) {
 		r.Get("/", app.Admin)
 		r.Get("/posts", app.AdminPosts)
-		r.Get("/posts/{id}", templ.Handler(ut.SkeletonPostCard()).ServeHTTP)
+		r.Get("/posts/{id}", app.AdminPost)
 		r.Get("/bloggers", app.AdminBloggers)
-		r.Get("/bloggers/{id}", templ.Handler(ut.SkeletonPostCard()).ServeHTTP)
+		r.Get("/bloggers/{id}", app.AdminBlogger)
 		r.Get("/users", app.AdminUsers)
-		r.Get("/users/{id}", templ.Handler(ut.SkeletonPostCard()).ServeHTTP)
+		r.Get("/users/{id}", app.AdminUser)
 	})
 
 	fmt.Println("Listening on :4231")

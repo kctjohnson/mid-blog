@@ -20,9 +20,13 @@ templ Posts(posts []models.Post) {
 				for _, post := range posts {
 					<tr id={ "post-row-" + strconv.Itoa(post.ID) }>
 						<td>{ strconv.Itoa(post.ID) }</td>
-						<td><a href={ templ.SafeURL("/admin/bloggers/" + strconv.Itoa(post.BloggerID)) }>{ post.Blogger.FirstName } { post.Blogger.LastName }</a></td>
+						<td>
+							@components.NavLink("/admin/bloggers/"+strconv.Itoa(post.BloggerID), post.Blogger.FirstName+" "+post.Blogger.LastName)
+						</td>
 						<td>{ post.CreateDate.Format("2006-01-02") }</td>
-						<td><a href={ templ.SafeURL("/admin/posts/" + strconv.Itoa(post.ID)) }>{ post.Title }</a></td>
+						<td>
+							@components.NavLink("/admin/posts/"+strconv.Itoa(post.ID), post.Title)
+						</td>
 						<td>{ strconv.Itoa(post.Likes) }</td>
 						<td>{ strconv.Itoa(post.Dislikes) }</td>
 					</tr>
@@ -32,5 +36,17 @@ templ Posts(posts []models.Post) {
 	}
 }
 
-templ Post() {
+templ Post(post models.Post) {
+	@components.Layout("Admin - Post") {
+		@Navbar()
+		<div class="p-8">
+			<p>{ strconv.Itoa(post.ID) }</p>
+			<p>{ post.Title }</p>
+			<p>{ post.Content }</p>
+			<p>{ strconv.Itoa(post.Likes) }</p>
+			<p>{ strconv.Itoa(post.Dislikes) }</p>
+			<p>{ post.CreateDate.Format("2006-01-02") }</p>
+			@components.NavLink("/admin/bloggers/"+strconv.Itoa(post.BloggerID), post.Blogger.FirstName+" "+post.Blogger.LastName)
+		</div>
+	}
 }
