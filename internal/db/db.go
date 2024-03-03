@@ -37,7 +37,7 @@ func (db *DB) RunMigrations() error {
 
 	CREATE TABLE IF NOT EXISTS post (
 		id INTEGER PRIMARY KEY, 
-		author_id INTEGER,
+		blogger_id INTEGER,
 		title TEXT,
 		content TEXT,
 		likes INTEGER,

@@ -1,0 +1,64 @@
+package pages
+
+import "github.com/kctjohnson/mid-blog/internal/db/models"
+import "github.com/kctjohnson/mid-blog/internal/templates/components"
+import "strings"
+import "github.com/kctjohnson/mid-blog/internal/templates/utils"
+
+templ PostNavbar() {
+	<div class="bg-yellow-500 px-5 drop-shadow-md" style="border-bottom: 1px solid black">
+		<div class="sm:col-span-2 flex justify-between p-2 items-center">
+			@components.Logo()
+			<div class="hidden sm:block mr-1">
+				<a href="/" class="p-1 text-sm">Our Story</a>
+				<a href="/" class="p-1 text-sm">Membership</a>
+				<a href="/" class="p-1 text-sm">Write</a>
+				<a href="/" class="p-1 text-sm">Sign In</a>
+			</div>
+		</div>
+	</div>
+}
+
+templ PostContent(post models.Post) {
+	<div class="w-full flex flex-col items-center pt-8">
+		<div class="prose flex flex-col items-center">
+			<h1>{ post.Title }</h1>
+			<div class="flex flex-row items-center m-1">
+				<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
+				<p class="text-sm">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
+			</div>
+			<p class="indent-8">{ utils.WordGenerator.Paragraphs(1) }</p>
+			<p class="indent-8">{ utils.WordGenerator.Paragraphs(1) }</p>
+			<p class="indent-8">{ utils.WordGenerator.Paragraphs(1) }</p>
+			<p class="indent-8">By { post.Blogger.FirstName } { post.Blogger.LastName } <em class="text-gray-300">- Published on { strings.Split(post.CreateDate.String(), " ")[0] }</em></p>
+		</div>
+	</div>
+}
+
+templ CommentsSection(comments []models.Comment) {
+	<div class="w-full flex flex-col items-center pt-24">
+		<h2 class="text-xl font-bold pb-8">Comments</h2>
+		<ul class="w-full flex flex-col items-center gap-8 pb-8">
+			for _, comment := range comments {
+				<li>
+					<div class="flex flex-row items-center m-1">
+						<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
+						<p class="text-sm">{ comment.User.Username }</p>
+					</div>
+					<p>{ comment.Content }</p>
+					<p><em class="text-sm text-gray-400">{ strings.Split(comment.CreateDate.String(), " ")[0] }</em></p>
+				</li>
+			}
+		</ul>
+	</div>
+}
+
+templ Post(post models.Post, comments []models.Comment) {
+	@components.Layout("MidBlog - " + post.Title) {
+		<div>
+			@PostNavbar()
+			@PostContent(post)
+			@CommentsSection(comments)
+		</div>
+	}
+}

@@ -46,6 +46,7 @@ func (app Application) StartServer() error {
 	r.Handle("/static/*", http.FileServer(http.FS(templates.Static)))
 
 	r.Get("/", app.Index)
+	r.Get("/{id}", app.Post)
 
 	fmt.Println("Listening on :4231")
 	if err := http.ListenAndServe(":4231", r); err != nil {

@@ -1,10 +1,15 @@
 package pages
 
-import "github.com/kctjohnson/mid-blog/internal/templates/utils"
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "github.com/kctjohnson/mid-blog/internal/db/models"
-import "fmt"
+import "strings"
+import "strconv"
 
+//if post.Likes - post.Dislikes >= 0 {
+//	<p>{ post.Title } By { post.Blogger.FirstName } { post.Blogger.LastName } { fmt.Sprintf("%d 👍", post.Likes - post.Dislikes) } </p>
+//} else {
+//	<p>{ post.Title } By { post.Blogger.FirstName } { post.Blogger.LastName } { fmt.Sprintf("%d 👎", post.Likes - post.Dislikes) }</p>
+//}
 templ IndexNavbar() {
 	<div class="sm:col-span-2 flex justify-between p-2 items-center" style="border-bottom: 1px solid black">
 		@components.Logo()
@@ -15,6 +20,17 @@ templ IndexNavbar() {
 			<a href="/" class="p-1 text-sm">Sign In</a>
 		</div>
 	</div>
+}
+
+templ PostCard(post models.Post) {
+	<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow w-full h-full flex flex-col items-center py-4">
+		<div class="flex flex-row items-center m-1">
+			<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
+			<p class="text-sm">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
+		</div>
+		<p class="font-bold m-1">{ post.Title }</p>
+		<p class="text-xs m-1">{ strings.Split(post.CreateDate.String(), " ")[0] }</p>
+	</a>
 }
 
 templ Index(posts []models.Post) {
@@ -30,9 +46,11 @@ templ Index(posts []models.Post) {
 					</div>
 				</div>
 			</div>
-			<p class="p-8 text-center">{ utils.WordGenerator.Sentences(6) }</p>
+			<p class="p-8 text-center indent-8">
+				Welcome to the pulsating heart of satire and technology, where mediocrity is not just embraced but celebrated with open arms! Our ingenious platform offers a smorgasbord of AI-generated content that stretches the boundaries of your imagination and tickles your funny bone. Engage with our eclectic selection of blog posts, each one crafted with clever algorithms that have mastered the art of tongue-in-cheek humor. At 'Stay Mediocre, Go Somewhere', every piece is a unique concoction of wit and wisdom, designed to give you a delightful reading experience that covers a gamut of topics. From the quirks of daily life to the absurdities of the digital age, we ensure the mundane transforms into the extraordinary — all at the convenience of your fingertips.
+			</p>
 		</div>
-		<div class="pt-8 pb-4 px-40">
+		<div class="flex flex-col items-center sm:block pt-8 pb-4 px-10 sm:px-40">
 			<div class="flex flex-row items-center pb-4">
 				<svg width="28" height="29" viewBox="0 0 28 29" fill="none" class="ji ah">
 					<path fill="#fff" d="M0 .8h28v28H0z"></path>
@@ -49,13 +67,9 @@ templ Index(posts []models.Post) {
 				</svg>
 				<p class="text-sm font-semibold whitespace-nowrap">Trending on Mid</p>
 			</div>
-			<div class="grid grid-cols-1 sm:grid-cols-3 gap-5 justify-items-center">
+			<div class="grid grid-cols-1 sm:grid-cols-3 gap-2 justify-items-center">
 				for _, post := range posts {
-					if post.Likes - post.Dislikes >= 0 {
-						<p>{ post.Title } { fmt.Sprintf("%d 👍", post.Likes - post.Dislikes) } </p>
-					} else {
-						<p>{ post.Title } { fmt.Sprintf("%d 👎", post.Likes - post.Dislikes) }</p>
-					}
+					@PostCard(post)
 				}
 			</div>
 		</div>

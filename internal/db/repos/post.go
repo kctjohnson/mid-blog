@@ -20,16 +20,16 @@ func NewPostRepository(db *db.DB) *PostRepository {
 
 // Create post
 type PostInsertParameters struct {
-	AuthorID int    `db:"author_id"`
-	Title    string `db:"title"`
-	Content  string `db:"content"`
+	BloggerID int    `db:"blogger_id"`
+	Title     string `db:"title"`
+	Content   string `db:"content"`
 }
 
 func (r PostRepository) Insert(newPost PostInsertParameters) (*models.Post, error) {
 	query, args, err := sq.
 		Insert(models.Post{}.TableString()).
-		Columns("create_date", "author_id", "title", "content", "likes", "dislikes").
-		Values(time.Now(), newPost.AuthorID, newPost.Title, newPost.Content, 0, 0).
+		Columns("create_date", "blogger_id", "title", "content", "likes", "dislikes").
+		Values(time.Now(), newPost.BloggerID, newPost.Title, newPost.Content, 0, 0).
 		ToSql()
 	if err != nil {
 		return nil, err

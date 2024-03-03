@@ -3,8 +3,9 @@ package models
 import "time"
 
 type Post struct {
-	ID         int       `db:"id"`
-	AuthorID   int       `db:"author_id"`
+	ID         int `db:"id"`
+	BloggerID  int `db:"blogger_id"`
+	Blogger    *Blogger
 	CreateDate time.Time `db:"create_date"`
 	Title      string    `db:"title"`
 	Content    string    `db:"content"`
@@ -15,7 +16,7 @@ type Post struct {
 func (m Post) SelectString() []string {
 	return []string{
 		"post.id",
-		"post.author_id",
+		"post.blogger_id",
 		"post.create_date",
 		"post.title",
 		"post.content",

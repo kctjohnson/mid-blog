@@ -10,11 +10,17 @@ import "context"
 import "io"
 import "bytes"
 
-import "github.com/kctjohnson/mid-blog/internal/templates/utils"
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "github.com/kctjohnson/mid-blog/internal/db/models"
-import "fmt"
+import "strings"
+import "strconv"
 
+//	if post.Likes - post.Dislikes >= 0 {
+//		<p>{ post.Title } By { post.Blogger.FirstName } { post.Blogger.LastName } { fmt.Sprintf("%d 👍", post.Likes - post.Dislikes) } </p>
+//	} else {
+//
+//		<p>{ post.Title } By { post.Blogger.FirstName } { post.Blogger.LastName } { fmt.Sprintf("%d 👎", post.Likes - post.Dislikes) }</p>
+//	}
 func IndexNavbar() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
@@ -47,7 +53,7 @@ func IndexNavbar() templ.Component {
 	})
 }
 
-func Index(posts []models.Post) templ.Component {
+func PostCard(post models.Post) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -60,7 +66,92 @@ func Index(posts []models.Post) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var3 := templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<a href=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var3 templ.SafeURL = templ.SafeURL("/" + strconv.Itoa(post.ID))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var3)))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow w-full h-full flex flex-col items-center py-4\"><div class=\"flex flex-row items-center m-1\"><div class=\"skeleton w-6 h-6 rounded-full mr-2\"></div><p class=\"text-sm\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var4 string
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(post.Blogger.FirstName)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 28, Col: 46}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var5 string
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(post.Blogger.LastName)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 28, Col: 72}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div><p class=\"font-bold m-1\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var6 string
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 30, Col: 39}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><p class=\"text-xs m-1\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var7 string
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(strings.Split(post.CreateDate.String(), " ")[0])
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 31, Col: 74}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></a>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if !templ_7745c5c3_IsBuffer {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func Index(posts []models.Post) templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+		if !templ_7745c5c3_IsBuffer {
+			templ_7745c5c3_Buffer = templ.GetBuffer()
+			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var8 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var8 == nil {
+			templ_7745c5c3_Var8 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Var9 := templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 			if !templ_7745c5c3_IsBuffer {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
@@ -74,86 +165,14 @@ func Index(posts []models.Post) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex justify-center items-center\"><div class=\"grid grid-rows-3 sm:grid-rows-4 pt-8 sm:pt-0\"><h1 class=\"text-4xl font-bold text-center\">Stay Mediocre, Go Somewhere</h1><p class=\"text-2xl text-center sm:text-left\">Find AI generated blog posts on any topic.</p><div class=\"row-span-2 justify-self-center sm:justify-self-start self-end\"><button class=\"btn rounded-full bg-black border-black text-white hover:bg-gray-800 mt-4\">Start Reading</button></div></div></div><p class=\"p-8 text-center\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var4 string
-			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(utils.WordGenerator.Sentences(6))
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 32, Col: 64}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div><div class=\"pt-8 pb-4 px-40\"><div class=\"flex flex-row items-center pb-4\"><svg width=\"28\" height=\"29\" viewBox=\"0 0 28 29\" fill=\"none\" class=\"ji ah\"><path fill=\"#fff\" d=\"M0 .8h28v28H0z\"></path> <g opacity=\"0.8\" clip-path=\"url(#trending_svg__clip0)\"><path fill=\"#fff\" d=\"M4 4.8h20v20H4z\"></path> <circle cx=\"14\" cy=\"14.79\" r=\"9.5\" stroke=\"#000\"></circle> <path d=\"M5.46 18.36l4.47-4.48M9.97 13.87l3.67 3.66M13.67 17.53l5.1-5.09M16.62 11.6h3M19.62 11.6v3\" stroke=\"#000\" stroke-linecap=\"round\"></path></g> <defs><clipPath id=\"trending_svg__clip0\"><path fill=\"#fff\" transform=\"translate(4 4.8)\" d=\"M0 0h20v20H0z\"></path></clipPath></defs></svg><p class=\"text-sm font-semibold whitespace-nowrap\">Trending on Mid</p></div><div class=\"grid grid-cols-1 sm:grid-cols-3 gap-5 justify-items-center\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex justify-center items-center\"><div class=\"grid grid-rows-3 sm:grid-rows-4 pt-8 sm:pt-0\"><h1 class=\"text-4xl font-bold text-center\">Stay Mediocre, Go Somewhere</h1><p class=\"text-2xl text-center sm:text-left\">Find AI generated blog posts on any topic.</p><div class=\"row-span-2 justify-self-center sm:justify-self-start self-end\"><button class=\"btn rounded-full bg-black border-black text-white hover:bg-gray-800 mt-4\">Start Reading</button></div></div></div><p class=\"p-8 text-center indent-8\">Welcome to the pulsating heart of satire and technology, where mediocrity is not just embraced but celebrated with open arms! Our ingenious platform offers a smorgasbord of AI-generated content that stretches the boundaries of your imagination and tickles your funny bone. Engage with our eclectic selection of blog posts, each one crafted with clever algorithms that have mastered the art of tongue-in-cheek humor. At 'Stay Mediocre, Go Somewhere', every piece is a unique concoction of wit and wisdom, designed to give you a delightful reading experience that covers a gamut of topics. From the quirks of daily life to the absurdities of the digital age, we ensure the mundane transforms into the extraordinary — all at the convenience of your fingertips.</p></div><div class=\"flex flex-col items-center sm:block pt-8 pb-4 px-10 sm:px-40\"><div class=\"flex flex-row items-center pb-4\"><svg width=\"28\" height=\"29\" viewBox=\"0 0 28 29\" fill=\"none\" class=\"ji ah\"><path fill=\"#fff\" d=\"M0 .8h28v28H0z\"></path> <g opacity=\"0.8\" clip-path=\"url(#trending_svg__clip0)\"><path fill=\"#fff\" d=\"M4 4.8h20v20H4z\"></path> <circle cx=\"14\" cy=\"14.79\" r=\"9.5\" stroke=\"#000\"></circle> <path d=\"M5.46 18.36l4.47-4.48M9.97 13.87l3.67 3.66M13.67 17.53l5.1-5.09M16.62 11.6h3M19.62 11.6v3\" stroke=\"#000\" stroke-linecap=\"round\"></path></g> <defs><clipPath id=\"trending_svg__clip0\"><path fill=\"#fff\" transform=\"translate(4 4.8)\" d=\"M0 0h20v20H0z\"></path></clipPath></defs></svg><p class=\"text-sm font-semibold whitespace-nowrap\">Trending on Mid</p></div><div class=\"grid grid-cols-1 sm:grid-cols-3 gap-2 justify-items-center\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, post := range posts {
-				if post.Likes-post.Dislikes >= 0 {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p>")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					var templ_7745c5c3_Var5 string
-					templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
-					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 54, Col: 21}
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					var templ_7745c5c3_Var6 string
-					templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d 👍", post.Likes-post.Dislikes))
-					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 54, Col: 76}
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p>")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-				} else {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p>")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					var templ_7745c5c3_Var7 string
-					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(post.Title)
-					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 56, Col: 21}
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					var templ_7745c5c3_Var8 string
-					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d 👎", post.Likes-post.Dislikes))
-					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/index.templ`, Line: 56, Col: 76}
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p>")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
+				templ_7745c5c3_Err = PostCard(post).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
 				}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
@@ -165,7 +184,7 @@ func Index(posts []models.Post) templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = components.Layout("MidBlog").Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.Layout("MidBlog").Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
