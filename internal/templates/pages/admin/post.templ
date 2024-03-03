@@ -16,6 +16,7 @@ templ Posts(posts []models.Post) {
 					<th>Title</th>
 					<th>Likes</th>
 					<th>Dislikes</th>
+					<th>Actions</th>
 				</tr>
 				for _, post := range posts {
 					<tr id={ "post-row-" + strconv.Itoa(post.ID) }>
@@ -29,6 +30,17 @@ templ Posts(posts []models.Post) {
 						</td>
 						<td>{ strconv.Itoa(post.Likes) }</td>
 						<td>{ strconv.Itoa(post.Dislikes) }</td>
+						<td>
+							<div class="dropdown dropdown-hover dropdown-bottom dropdown-end">
+								<div tabindex="0" role="button" class="w-6 h-6 hover:bg-gray-100 transition rounded m-1 text-center">...</div>
+								<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+									<li>
+										<a href={ templ.SafeURL("/admin/posts/" + strconv.Itoa(post.ID)) }>View</a>
+									</li>
+									<li><a>Delete</a></li>
+								</ul>
+							</div>
+						</td>
 					</tr>
 				}
 			</table>

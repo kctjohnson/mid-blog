@@ -13,12 +13,24 @@ templ Users(users []models.User) {
 					<th>ID</th>
 					<th>Username</th>
 					<th>Create Date</th>
+					<th>Actions</th>
 				</tr>
 				for _, user := range users {
 					<tr id={ "user-row-" + strconv.Itoa(user.ID) }>
 						<td>{ strconv.Itoa(user.ID) }</td>
 						<td>{ user.Username }</td>
 						<td>{ user.CreateDate.Format("2006-01-02") }</td>
+						<td>
+							<div class="dropdown dropdown-hover dropdown-bottom dropdown-end">
+								<div tabindex="0" role="button" class="w-6 h-6 hover:bg-gray-100 transition rounded m-1 text-center">...</div>
+								<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+									<li>
+										<a href={ templ.SafeURL("/admin/users/" + strconv.Itoa(user.ID)) }>View</a>
+									</li>
+									<li><a>Delete</a></li>
+								</ul>
+							</div>
+						</td>
 					</tr>
 				}
 			</table>
