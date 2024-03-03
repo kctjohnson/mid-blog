@@ -91,6 +91,24 @@ func (r UserRepository) FindByUsername(username string) (*models.User, error) {
 	return &user, nil
 }
 
+func (r UserRepository) All() ([]models.User, error) {
+	query, args, err := sq.
+		Select(models.User{}.SelectString()...).
+		From(models.User{}.TableString()).
+		ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	var found []models.User
+	err = r.db.Select(&found, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return found, nil
+}
+
 func (r UserRepository) Delete(id int) error {
 	query, args, err := sq.
 		Delete(models.User{}.TableString()).
