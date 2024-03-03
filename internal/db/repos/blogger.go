@@ -148,3 +148,20 @@ func (r BloggerRepository) Update(updateBlogger BloggerUpdateParameters) (*model
 
 	return found, nil
 }
+
+func (r BloggerRepository) Delete(id int) error {
+	query, args, err := sq.
+		Delete(models.Blogger{}.TableString()).
+		Where(sq.Eq{"id": id}).
+		ToSql()
+	if err != nil {
+		return err
+	}
+
+	_, err = r.db.Exec(query, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
