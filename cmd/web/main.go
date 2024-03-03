@@ -22,7 +22,7 @@ type Application struct {
 func main() {
 	cfg := config.New(".")
 
-	db, err := db.New(cfg.DSN, true)
+	db, err := db.New(cfg.DSN, cfg.AutoMigrate)
 	if err != nil {
 		panic(err)
 	}
