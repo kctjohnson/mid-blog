@@ -1,76 +1,58 @@
 package db
 
 import (
+	"errors"
 	"log"
-	"os"
-	"path/filepath"
+	"time"
 
+	"github.com/kctjohnson/mid-blog/assets"
+
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/jmoiron/sqlx"
-	_ "github.com/mattn/go-sqlite3"
+
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/golang-migrate/migrate/v4/database/mysql"
 )
 
 type DB struct {
 	*sqlx.DB
 }
 
-func New(dbName string) *DB {
-	rootDir, _ := os.Getwd()
-	db, err := sqlx.Connect("sqlite3", filepath.Join(rootDir, dbName))
+func New(dsn string, automigrate bool) (*DB, error) {
+	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return &DB{db}
+
+	db.SetMaxOpenConns(25)
+	db.SetMaxIdleConns(25)
+	db.SetConnMaxIdleTime(5 * time.Minute)
+	db.SetConnMaxLifetime(2 * time.Hour)
+
+	if automigrate {
+		iofsDriver, err := iofs.New(assets.Migrations, "migrations")
+		if err != nil {
+			return nil, err
+		}
+
+		migrator, err := migrate.NewWithSourceInstance("iofs", iofsDriver, "mysql://"+dsn)
+		if err != nil {
+			return nil, err
+		}
+
+		err = migrator.Up()
+		switch {
+		case errors.Is(err, migrate.ErrNoChange):
+			break
+		case err != nil:
+			return nil, err
+		}
+	}
+
+	return &DB{db}, nil
 }
 
 func (db *DB) RunMigrations() error {
-	sqlCreate := `
-	CREATE TABLE IF NOT EXISTS blogger (
-		id INTEGER PRIMARY KEY, 
-		first_name TEXT, 
-		last_name TEXT,
-		email TEXT,
-		age INTEGER,
-		gender TEXT,
-		bio TEXT,
-		create_date DATETIME
-	);
-
-	CREATE TABLE IF NOT EXISTS post (
-		id INTEGER PRIMARY KEY, 
-		blogger_id INTEGER,
-		title TEXT,
-		content TEXT,
-		likes INTEGER,
-		dislikes INTEGER,
-		create_date DATETIME
-	);
-
-	CREATE TABLE IF NOT EXISTS user (
-		id INTEGER PRIMARY KEY, 
-		username TEXT,
-		password TEXT,
-		create_date DATETIME
-	);
-
-	CREATE TABLE IF NOT EXISTS comment (
-		id INTEGER PRIMARY KEY, 
-		user_id INTEGER,
-		post_id INTEGER,
-		content TEXT,
-		likes INTEGER,
-		dislikes INTEGER,
-		create_date DATETIME
-	);
-	`
-
-	_, err := db.Exec(sqlCreate)
-	return err
-}
-
-func Teardown(dbName string) {
-	rootDir, _ := os.Getwd()
-	err := os.Remove(filepath.Join(rootDir, dbName))
-	if err != nil {
-		log.Fatal(err)
-	}
+	return nil
 }
