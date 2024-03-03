@@ -32,5 +32,17 @@ templ Bloggers(bloggers []models.Blogger) {
 	}
 }
 
-templ Blogger() {
+templ Blogger(blogger models.Blogger) {
+	@components.Layout("Admin - Blogger") {
+		@Navbar()
+		<div class="p-8">
+			<p>{ strconv.Itoa(blogger.ID) }</p>
+			<p>{ blogger.Email }</p>
+			<p>{ blogger.FirstName }</p>
+			<p>{ blogger.LastName }</p>
+			<p>{ strconv.Itoa(blogger.Age) }</p>
+			<p>{ string(blogger.Gender) }</p>
+			<p>{ blogger.Bio }</p>
+		</div>
+	}
 }

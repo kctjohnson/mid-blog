@@ -109,6 +109,25 @@ func (r UserRepository) All() ([]models.User, error) {
 	return found, nil
 }
 
+func (r UserRepository) Comments(id int) ([]models.Comment, error) {
+	query, args, err := sq.
+		Select(models.Comment{}.SelectString()...).
+		From(models.Comment{}.TableString()).
+		Join("user ON comment.user_id = user.id").
+		Where(sq.Eq{"user_id": id}).ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	var found []models.Comment
+	err = r.db.Select(&found, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return found, nil
+}
+
 func (r UserRepository) Delete(id int) error {
 	query, args, err := sq.
 		Delete(models.User{}.TableString()).
