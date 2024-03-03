@@ -1,4 +1,4 @@
-package pages
+package public
 
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "github.com/kctjohnson/mid-blog/internal/db/models"
@@ -24,7 +24,18 @@ templ PostCard(post models.Post) {
 			<p class="text-sm">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
 		</div>
 		<p class="font-bold m-1">{ post.Title }</p>
-		<p class="text-xs m-1">{ strings.Split(post.CreateDate.String(), " ")[0] }</p>
+		<div class="flex">
+			<p class="text-xs m-1">{ strings.Split(post.CreateDate.String(), " ")[0] }</p>
+			<p
+				class={
+					"text-xs m-1",
+					templ.KV("text-green-500", (post.Likes-post.Dislikes) > 0),
+					templ.KV("text-red-500", (post.Likes-post.Dislikes) < 0),
+				}
+			>
+				{ strconv.Itoa(post.Likes - post.Dislikes) }
+			</p>
+		</div>
 	</a>
 }
 

@@ -3,6 +3,7 @@ package public
 import "github.com/kctjohnson/mid-blog/internal/db/models"
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "strings"
+import "strconv"
 
 templ PostNavbar() {
 	<div class="bg-yellow-500 px-5 drop-shadow-md" style="border-bottom: 1px solid black">
@@ -34,6 +35,23 @@ templ PostContent(post models.Post) {
 	</div>
 }
 
+templ PostStats(post models.Post) {
+	<div class="w-full flex flex-row justify-center pt-8 px-4 space-x-1">
+		<p
+			id="post-stats"
+			class={
+				"mr-1",
+				templ.KV("text-green-500", (post.Likes-post.Dislikes) > 0),
+				templ.KV("text-red-500", (post.Likes-post.Dislikes) < 0),
+			}
+		>
+			{ strconv.Itoa(post.Likes - post.Dislikes) }
+		</p>
+		<button hx-post={ "/api/posts/" + strconv.Itoa(post.ID) + "/like" } hx-target="#post-stats" hx-swap="innerHTML" class="btn btn-xs bg-green-500">+</button>
+		<button hx-post={ "/api/posts/" + strconv.Itoa(post.ID) + "/dislike" } hx-target="#post-stats" hx-swap="innerHTML" class="btn btn-xs bg-red-500">-</button>
+	</div>
+}
+
 templ CommentsSection(comments []models.Comment) {
 	<div class="w-full flex flex-col items-center pt-24">
 		<h2 class="text-xl font-bold pb-8">Comments</h2>
@@ -57,6 +75,7 @@ templ Post(post models.Post, comments []models.Comment) {
 		<div>
 			@PostNavbar()
 			@PostContent(post)
+			@PostStats(post)
 			@CommentsSection(comments)
 		</div>
 	}
