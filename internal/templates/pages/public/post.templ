@@ -25,12 +25,12 @@ templ PostContent(post models.Post) {
 			<h1>{ post.Title }</h1>
 			<div class="flex flex-row items-center m-1">
 				<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
-				<p class="text-sm">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
+				<p class="text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
 			</div>
 			for _, paragraph := range strings.Split(post.Content, "\n") {
 				<p>{ paragraph }</p>
 			}
-			<p class="indent-8">By { post.Blogger.FirstName } { post.Blogger.LastName } <em class="text-gray-300">- Published on { strings.Split(post.CreateDate.String(), " ")[0] }</em></p>
+			<p class="indent-8 capitalize">By { post.Blogger.FirstName } { post.Blogger.LastName } <em class="text-gray-300 normal-case">- Published on { strings.Split(post.CreateDate.String(), " ")[0] }</em></p>
 		</div>
 	</div>
 }
