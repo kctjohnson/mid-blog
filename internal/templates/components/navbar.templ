@@ -1,0 +1,27 @@
+package components
+
+templ Navbar() {
+	<div class="bg-yellow-500 px-5 drop-shadow-md" style="border-bottom: 1px solid black">
+		<div class="flex justify-between p-2 items-center">
+			@Logo()
+			<div class="hidden sm:block mr-1">
+				@NavLink("/", "Our Story")
+				@NavLink("/", "Membership")
+				@NavLink("/", "Write")
+				@NavLink("/login", "Sign In")
+			</div>
+		</div>
+	</div>
+}
+
+templ IndexNavbar() {
+	<div class="sm:col-span-2 flex justify-between p-2 items-center" style="border-bottom: 1px solid black">
+		@Logo()
+		<div class="hidden sm:block mr-1">
+			@NavLink("/", "Our Story")
+			@NavLink("/", "Membership")
+			@NavLink("/", "Write")
+			@NavLink("/login", "Sign In")
+		</div>
+	</div>
+}

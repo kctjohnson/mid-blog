@@ -18,10 +18,12 @@ require (
 )
 
 require (
+	github.com/alexedwards/scs/v2 v2.7.0
 	github.com/ayush6624/go-chatgpt v0.3.0
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/golang-migrate/migrate/v4 v4.17.0
 	github.com/joho/godotenv v1.5.1
 	github.com/lann/builder v0.0.0-20180802200727-47ae307949d0 // indirect
 	github.com/lann/ps v0.0.0-20150810152359-62de8c46ede0 // indirect
+	golang.org/x/crypto v0.20.0
 )
