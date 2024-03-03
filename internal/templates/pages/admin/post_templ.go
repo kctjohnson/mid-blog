@@ -67,7 +67,7 @@ func Posts(posts []models.Post) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = components.NavLink("/admin/bloggers/"+strconv.Itoa(post.BloggerID), post.Blogger.FirstName+" "+post.Blogger.LastName).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = components.Link("/admin/bloggers/"+strconv.Itoa(post.BloggerID), post.Blogger.FirstName+" "+post.Blogger.LastName).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -88,7 +88,7 @@ func Posts(posts []models.Post) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = components.NavLink("/admin/posts/"+strconv.Itoa(post.ID), post.Title).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = components.Link("/admin/posts/"+strconv.Itoa(post.ID), post.Title).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -248,7 +248,7 @@ func Post(post models.Post) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.NavLink("/admin/bloggers/"+strconv.Itoa(post.BloggerID), post.Blogger.FirstName+" "+post.Blogger.LastName).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.Link("/admin/bloggers/"+strconv.Itoa(post.BloggerID), post.Blogger.FirstName+" "+post.Blogger.LastName).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
