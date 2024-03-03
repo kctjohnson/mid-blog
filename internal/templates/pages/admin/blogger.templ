@@ -16,6 +16,7 @@ templ Bloggers(bloggers []models.Blogger) {
 					<th>Age</th>
 					<th>Gender</th>
 					<th>Bio</th>
+					<th>Actions</th>
 				</tr>
 				for _, blogger := range bloggers {
 					<tr id={ "blogger-row-" + strconv.Itoa(blogger.ID) }>
@@ -25,6 +26,17 @@ templ Bloggers(bloggers []models.Blogger) {
 						<td>{ strconv.Itoa(blogger.Age) }</td>
 						<td>{ string(blogger.Gender) }</td>
 						<td>{ blogger.Bio }</td>
+						<td>
+							<div class="dropdown dropdown-hover dropdown-bottom dropdown-end">
+								<div tabindex="0" role="button" class="w-6 h-6 hover:bg-gray-100 transition rounded m-1 text-center">...</div>
+								<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+									<li>
+										<a href={ templ.SafeURL("/admin/bloggers/" + strconv.Itoa(blogger.ID)) }>View</a>
+									</li>
+									<li><a>Delete</a></li>
+								</ul>
+							</div>
+						</td>
 					</tr>
 				}
 			</table>

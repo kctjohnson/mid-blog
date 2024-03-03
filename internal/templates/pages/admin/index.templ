@@ -5,7 +5,9 @@ import "github.com/kctjohnson/mid-blog/internal/templates/components"
 templ Index() {
 	@components.Layout("Admin") {
 		@Navbar()
-		<h1>Admin Panel</h1>
-		<p>Gotta add a navbar or smth so we can access each section</p>
+		<div class="prose p-8">
+			<h1>Admin Panel</h1>
+			<p>Manage all of the things here</p>
+		</div>
 	}
 }
