@@ -13,6 +13,7 @@ type Config struct {
 	MySQLRootPassword string `mapstructure:"MYSQL_ROOT_PASSWORD"`
 	DSN               string `mapstructure:"DSN"`
 	AutoMigrate       bool   `mapstructure:"AUTO_MIGRATE"`
+	OpenAIKey         string `mapstructure:"OPENAI_KEY"`
 }
 
 func New(path string) *Config {
@@ -33,6 +34,7 @@ func loadConfig() Config {
 		MySQLRootPassword: GetString("MYSQL_ROOT_PASSWORD", ""),
 		DSN:               GetString("DSN", ""),
 		AutoMigrate:       GetBool("AUTO_MIGRATE", false),
+		OpenAIKey:         GetString("OPENAI_KEY", ""),
 	}
 	return cfg
 }

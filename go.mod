@@ -18,6 +18,7 @@ require (
 )
 
 require (
+	github.com/ayush6624/go-chatgpt v0.3.0
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/golang-migrate/migrate/v4 v4.17.0
 	github.com/joho/godotenv v1.5.1
