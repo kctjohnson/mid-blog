@@ -8,7 +8,6 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/kctjohnson/mid-blog/internal/config"
 	"github.com/kctjohnson/mid-blog/internal/db"
-	"github.com/kctjohnson/mid-blog/internal/db/models"
 	"github.com/kctjohnson/mid-blog/internal/db/repos"
 	"github.com/kctjohnson/mid-blog/internal/templates"
 )
@@ -32,44 +31,6 @@ func main() {
 	commentRepo := repos.NewCommentRepository(db)
 	postRepo := repos.NewPostRepository(db)
 	userRepo := repos.NewUserRepository(db)
-
-	me, err := userRepo.Insert(repos.UserInsertParameters{
-		Username: "kctjohnson",
-		Password: "password",
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	kris, err := bloggerRepo.Insert(repos.BloggerInsertParameters{
-		FirstName: "Kris",
-		LastName:  "Johnson",
-		Email:     "kj@mid.com",
-		Age:       30,
-		Gender:    models.Male,
-		Bio:       "I'm a software engineer.",
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	post, err := postRepo.Insert(repos.PostInsertParameters{
-		BloggerID: kris.ID,
-		Title:     "Hello, World!",
-		Content:   "This is my first post.",
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	_, err = commentRepo.Insert(repos.CommentInsertParameters{
-		UserID:  me.ID,
-		PostID:  post.ID,
-		Content: "Great post!",
-	})
-	if err != nil {
-		panic(err)
-	}
 
 	app := Application{
 		BloggerRepo: bloggerRepo,
