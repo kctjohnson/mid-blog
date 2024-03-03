@@ -1,4 +1,4 @@
-package pages
+package public
 
 import "github.com/kctjohnson/mid-blog/internal/db/models"
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
@@ -10,10 +10,10 @@ templ PostNavbar() {
 		<div class="sm:col-span-2 flex justify-between p-2 items-center">
 			@components.Logo()
 			<div class="hidden sm:block mr-1">
-				<a href="/" class="p-1 text-sm">Our Story</a>
-				<a href="/" class="p-1 text-sm">Membership</a>
-				<a href="/" class="p-1 text-sm">Write</a>
-				<a href="/" class="p-1 text-sm">Sign In</a>
+				@components.NavLink("/", "Our Story")
+				@components.NavLink("/", "Membership")
+				@components.NavLink("/", "Write")
+				@components.NavLink("/", "Sign In")
 			</div>
 		</div>
 	</div>

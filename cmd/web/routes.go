@@ -6,6 +6,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/kctjohnson/mid-blog/internal/templates/pages"
+	"github.com/kctjohnson/mid-blog/internal/templates/pages/admin"
+	"github.com/kctjohnson/mid-blog/internal/templates/pages/public"
 )
 
 func (app Application) Index(w http.ResponseWriter, r *http.Request) {
@@ -23,8 +25,7 @@ func (app Application) Index(w http.ResponseWriter, r *http.Request) {
 		posts[i].Blogger = blogger
 	}
 
-	component := pages.Index(posts)
-	component.Render(r.Context(), w)
+	pages.Index(posts).Render(r.Context(), w)
 }
 
 func (app Application) Post(w http.ResponseWriter, r *http.Request) {
@@ -69,6 +70,47 @@ func (app Application) Post(w http.ResponseWriter, r *http.Request) {
 		comments[i].User = user
 	}
 
-	component := pages.Post(*post, comments)
-	component.Render(r.Context(), w)
+	public.Post(*post, comments).Render(r.Context(), w)
+}
+
+func (app Application) Admin(w http.ResponseWriter, r *http.Request) {
+	admin.Index().Render(r.Context(), w)
+}
+
+func (app Application) AdminPosts(w http.ResponseWriter, r *http.Request) {
+	posts, err := app.PostRepo.All()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	for i := range posts {
+		blogger, err := app.BloggerRepo.FindByID(posts[i].BloggerID)
+		if err != nil {
+			return
+		}
+		posts[i].Blogger = blogger
+	}
+
+	admin.Posts(posts).Render(r.Context(), w)
+}
+
+func (app Application) AdminBloggers(w http.ResponseWriter, r *http.Request) {
+	bloggers, err := app.BloggerRepo.All()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	admin.Bloggers(bloggers).Render(r.Context(), w)
+}
+
+func (app Application) AdminUsers(w http.ResponseWriter, r *http.Request) {
+	users, err := app.UserRepo.All()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	admin.Users(users).Render(r.Context(), w)
 }

@@ -5,19 +5,14 @@ import "github.com/kctjohnson/mid-blog/internal/db/models"
 import "strings"
 import "strconv"
 
-//if post.Likes - post.Dislikes >= 0 {
-//	<p>{ post.Title } By { post.Blogger.FirstName } { post.Blogger.LastName } { fmt.Sprintf("%d 👍", post.Likes - post.Dislikes) } </p>
-//} else {
-//	<p>{ post.Title } By { post.Blogger.FirstName } { post.Blogger.LastName } { fmt.Sprintf("%d 👎", post.Likes - post.Dislikes) }</p>
-//}
 templ IndexNavbar() {
 	<div class="sm:col-span-2 flex justify-between p-2 items-center" style="border-bottom: 1px solid black">
 		@components.Logo()
 		<div class="hidden sm:block mr-1">
-			<a href="/" class="p-1 text-sm">Our Story</a>
-			<a href="/" class="p-1 text-sm">Membership</a>
-			<a href="/" class="p-1 text-sm">Write</a>
-			<a href="/" class="p-1 text-sm">Sign In</a>
+			@components.NavLink("/", "Our Story")
+			@components.NavLink("/", "Membership")
+			@components.NavLink("/", "Write")
+			@components.NavLink("/", "Sign In")
 		</div>
 	</div>
 }

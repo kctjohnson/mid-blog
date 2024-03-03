@@ -1,0 +1,33 @@
+package admin
+
+import "github.com/kctjohnson/mid-blog/internal/db/models"
+import "github.com/kctjohnson/mid-blog/internal/templates/components"
+import "strconv"
+
+templ Posts(posts []models.Post) {
+	@components.Layout("Admin - Posts") {
+		@Navbar()
+		<h1>Posts</h1>
+		<table class="table">
+			<tr>
+				<th>ID</th>
+				<th>Blogger</th>
+				<th>Create Date</th>
+				<th>Title</th>
+				<th>Likes</th>
+				<th>Dislikes</th>
+			</tr>
+			for _, post := range posts {
+				<tr id={ "post-row-" + strconv.Itoa(post.ID) }>
+					<td>{ strconv.Itoa(post.ID) }</td>
+					<td><a href={ templ.SafeURL("/admin/bloggers/" + strconv.Itoa(post.BloggerID)) }>{ post.Blogger.FirstName } { post.Blogger.LastName }</a></td>
+					<td>{ post.CreateDate.Format("2006-01-02") }</td>
+					<td><a href={ templ.SafeURL("/admin/posts/" + strconv.Itoa(post.ID)) }>{ post.Title }</a></td>
+					<td>{ strconv.Itoa(post.Likes) }</td>
+					<td>{ strconv.Itoa(post.Dislikes) }</td>
+				</tr>
+			}
+		</table>
+	}
+	<p></p>
+}

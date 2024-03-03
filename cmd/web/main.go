@@ -4,13 +4,14 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/kctjohnson/mid-blog/internal/config"
 	"github.com/kctjohnson/mid-blog/internal/db"
-	"github.com/kctjohnson/mid-blog/internal/db/models"
 	"github.com/kctjohnson/mid-blog/internal/db/repos"
 	"github.com/kctjohnson/mid-blog/internal/templates"
+	ut "github.com/kctjohnson/mid-blog/internal/templates/utils"
 )
 
 type Application struct {
@@ -33,44 +34,6 @@ func main() {
 	postRepo := repos.NewPostRepository(db)
 	userRepo := repos.NewUserRepository(db)
 
-	me, err := userRepo.Insert(repos.UserInsertParameters{
-		Username: "kctjohnson",
-		Password: "password",
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	kris, err := bloggerRepo.Insert(repos.BloggerInsertParameters{
-		FirstName: "Kris",
-		LastName:  "Johnson",
-		Email:     "kj@mid.com",
-		Age:       30,
-		Gender:    models.Male,
-		Bio:       "I'm a software engineer.",
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	post, err := postRepo.Insert(repos.PostInsertParameters{
-		BloggerID: kris.ID,
-		Title:     "Hello, World!",
-		Content:   "This is my first post.",
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	_, err = commentRepo.Insert(repos.CommentInsertParameters{
-		UserID:  me.ID,
-		PostID:  post.ID,
-		Content: "Great post!",
-	})
-	if err != nil {
-		panic(err)
-	}
-
 	app := Application{
 		BloggerRepo: bloggerRepo,
 		CommentRepo: commentRepo,
@@ -89,6 +52,16 @@ func (app Application) StartServer() error {
 
 	r.Get("/", app.Index)
 	r.Get("/{id}", app.Post)
+
+	r.Route("/admin", func(r chi.Router) {
+		r.Get("/", app.Admin)
+		r.Get("/posts", app.AdminPosts)
+		r.Get("/posts/{id}", templ.Handler(ut.SkeletonPostCard()).ServeHTTP)
+		r.Get("/bloggers", app.AdminBloggers)
+		r.Get("/bloggers/{id}", templ.Handler(ut.SkeletonPostCard()).ServeHTTP)
+		r.Get("/users", app.AdminUsers)
+		r.Get("/users/{id}", templ.Handler(ut.SkeletonPostCard()).ServeHTTP)
+	})
 
 	fmt.Println("Listening on :4231")
 	if err := http.ListenAndServe(":4231", r); err != nil {

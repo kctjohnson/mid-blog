@@ -1,0 +1,11 @@
+package admin
+
+import "github.com/kctjohnson/mid-blog/internal/templates/components"
+
+templ Index() {
+	@components.Layout("Admin") {
+		@Navbar()
+		<h1>Admin Panel</h1>
+		<p>Gotta add a navbar or smth so we can access each section</p>
+	}
+}
