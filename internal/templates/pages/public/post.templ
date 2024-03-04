@@ -5,6 +5,25 @@ import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "strings"
 import "strconv"
 
+templ LockedPostContent(post models.Post) {
+	<div class="w-full flex flex-col items-center pt-8 px-4">
+		<div class="prose flex flex-col items-center">
+			<h1>{ post.Title }</h1>
+			<div class="flex flex-row items-center m-1">
+				<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
+				<p class="text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
+			</div>
+			<p>{ strings.Split(post.Content, "\n")[0] }</p>
+			<div class="divider"></div>
+			<div class="glass border-none shadow-none">
+				<p class="text-gray-300 w-full">This post is locked. Please <a class="link" href="/login">log in</a> to read the full content.</p>
+			</div>
+			<div class="divider"></div>
+			<p class="indent-8 capitalize">By { post.Blogger.FirstName } { post.Blogger.LastName } <em class="text-gray-300 normal-case">- Published on { strings.Split(post.CreateDate.String(), " ")[0] }</em></p>
+		</div>
+	</div>
+}
+
 templ PostContent(post models.Post) {
 	<div class="w-full flex flex-col items-center pt-8 px-4">
 		<div class="prose flex flex-col items-center">
@@ -97,7 +116,11 @@ templ Post(user *models.User, post models.Post, comments []models.Comment) {
 	@components.Layout("MidBlog - " + post.Title) {
 		<div>
 			@components.Navbar(user)
-			@PostContent(post)
+			if user == nil {
+				@LockedPostContent(post)
+			} else {
+				@PostContent(post)
+			}
 			<div class="w-full flex flex-row justify-center pt-8 px-4 space-x-1">
 				if user != nil {
 					@PostStats(post)
