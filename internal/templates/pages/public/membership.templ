@@ -6,7 +6,7 @@ import "github.com/kctjohnson/mid-blog/internal/db/models"
 templ Membership(user *models.User) {
 	@components.Layout("Membership") {
 		@components.Navbar(user)
-		<div class="w-full flex flex-col items-center py-8">
+		<div class="w-full flex flex-col items-center py-8 px-4">
 			<div class="prose">
 				<h1>Membership</h1>
 				<h3>For Anonymous Users:</h3>
