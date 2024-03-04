@@ -15,6 +15,9 @@ templ LockedPostContent(post models.Post) {
 			<div class="flex flex-row items-center m-1">
 				<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
 				<p class="text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
+				<div class="pl-2">
+					@PostRating(post)
+				</div>
 			</div>
 			<div class={ LockedContentDiv() }>
 				<p>{ strings.Split(post.Content, "\n")[0] }</p>
@@ -40,6 +43,9 @@ templ PostContent(post models.Post) {
 			<div class="flex flex-row items-center m-1">
 				<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
 				<p class="text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
+				<div class="pl-2">
+					@PostRating(post)
+				</div>
 			</div>
 			for _, paragraph := range strings.Split(post.Content, "\n") {
 				<p>{ paragraph }</p>
@@ -49,35 +55,55 @@ templ PostContent(post models.Post) {
 	</div>
 }
 
-templ PostStats(post models.Post) {
-	<div id="post-stats" class="flex flex-row justify-center">
-		<p
-			class={
-				"mr-1",
-				templ.KV("text-green-500", (post.Likes-post.Dislikes) > 0),
-				templ.KV("text-red-500", (post.Likes-post.Dislikes) < 0),
-			}
-		>
-			{ strconv.Itoa(post.Likes - post.Dislikes) }
-		</p>
-		<button hx-post={ "/api/posts/" + strconv.Itoa(post.ID) + "/like" } hx-target="#post-stats" hx-swap="outerHTML" class="btn btn-xs bg-green-500">+</button>
-		<button hx-post={ "/api/posts/" + strconv.Itoa(post.ID) + "/dislike" } hx-target="#post-stats" hx-swap="outerHTML" class="btn btn-xs bg-red-500">-</button>
+templ PostRating(post models.Post) {
+	<p
+		class={
+			"mr-1",
+			templ.KV("text-green-500", (post.Likes-post.Dislikes) > 0),
+			templ.KV("text-red-500", (post.Likes-post.Dislikes) < 0),
+		}
+	>
+		{ strconv.Itoa(post.Likes - post.Dislikes) }
+	</p>
+}
+
+templ PostStats(user *models.User, post models.Post) {
+	<div id="post-stats" class="flex flex-row justify-center items-center space-x-3">
+		if user != nil {
+			@PostRating(post)
+			<button hx-post={ "/api/posts/" + strconv.Itoa(post.ID) + "/like" } hx-target="#post-stats" hx-swap="outerHTML" class="w-4 h-4 hover:drop-shadow-md">
+				@components.LikeIcon(16, 16)
+			</button>
+			<button hx-post={ "/api/posts/" + strconv.Itoa(post.ID) + "/dislike" } hx-target="#post-stats" hx-swap="outerHTML" class="w-4 h-4 hover:drop-shadow-md">
+				@components.DislikeIcon(16, 16)
+			</button>
+		}
 	</div>
 }
 
-templ CommentStats(comment models.Comment) {
-	<div id="comment-stats" class="flex flex-row justify-center">
-		<p
-			class={
-				"mr-1",
-				templ.KV("text-green-500", (comment.Likes-comment.Dislikes) > 0),
-				templ.KV("text-red-500", (comment.Likes-comment.Dislikes) < 0),
-			}
-		>
-			{ strconv.Itoa(comment.Likes - comment.Dislikes) }
-		</p>
-		<button hx-post={ "/api/comments/" + strconv.Itoa(comment.ID) + "/like" } hx-target="#comment-stats" hx-swap="outerHTML" class="btn btn-xs bg-green-500">+</button>
-		<button hx-post={ "/api/comments/" + strconv.Itoa(comment.ID) + "/dislike" } hx-target="#comment-stats" hx-swap="outerHTML" class="btn btn-xs bg-red-500">-</button>
+templ CommentRating(comment models.Comment) {
+	<p
+		class={
+			"mr-1",
+			templ.KV("text-green-500", (comment.Likes-comment.Dislikes) > 0),
+			templ.KV("text-red-500", (comment.Likes-comment.Dislikes) < 0),
+		}
+	>
+		{ strconv.Itoa(comment.Likes - comment.Dislikes) }
+	</p>
+}
+
+templ CommentStats(user *models.User, comment models.Comment) {
+	<div id="comment-stats" class="flex flex-row justify-center items-center space-x-3">
+		@CommentRating(comment)
+		if user != nil {
+			<button hx-post={ "/api/comments/" + strconv.Itoa(comment.ID) + "/like" } hx-target="#comment-stats" hx-swap="outerHTML" class="w-4 h-4 hover:drop-shadow-md">
+				@components.LikeIcon(16, 16)
+			</button>
+			<button hx-post={ "/api/comments/" + strconv.Itoa(comment.ID) + "/dislike" } hx-target="#comment-stats" hx-swap="outerHTML" class="w-4 h-4 hover:drop-shadow-md">
+				@components.DislikeIcon(16, 16)
+			</button>
+		}
 	</div>
 }
 
@@ -90,9 +116,7 @@ templ Comment(user *models.User, comment models.Comment) {
 		<p style="max-width: 65ch">{ comment.Content }</p>
 		<div class="flex flex-row items-center space-x-2">
 			<p><em class="text-sm text-gray-400">{ strings.Split(comment.CreateDate.String(), " ")[0] }</em></p>
-			if user != nil {
-				@CommentStats(comment)
-			}
+			@CommentStats(user, comment)
 		</div>
 	</li>
 }
@@ -131,10 +155,10 @@ templ Post(user *models.User, post models.Post, comments []models.Comment) {
 				@PostContent(post)
 			}
 			<div class="w-full flex flex-row justify-center pt-8 px-4 space-x-1">
-				if user != nil {
-					@PostStats(post)
-				} else {
+				if user == nil {
 					<p class="prose text-gray-300"><em><a class="link text-gray-400" href="/login">Log in</a> to rate post</em></p>
+				} else {
+					@PostStats(user, post)
 				}
 			</div>
 			@CommentsSection(user, post, comments)
