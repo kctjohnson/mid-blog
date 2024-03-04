@@ -77,6 +77,7 @@ func (r PostRepository) All() ([]models.Post, error) {
 	query, args, err := sq.
 		Select(models.Post{}.SelectString()...).
 		From(models.Post{}.TableString()).
+		OrderBy("(likes - dislikes) DESC").
 		ToSql()
 	if err != nil {
 		return nil, err
