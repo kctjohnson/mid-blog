@@ -1,0 +1,132 @@
+package components
+
+import "github.com/kctjohnson/mid-blog/internal/db/models"
+
+templ AdminNavbar(user models.User) {
+	<div class="bg-yellow-500 px-5 drop-shadow-md" style="border-bottom: 1px solid black;position:relative;z-index:2">
+		<div class="sm:col-span-2 flex justify-between p-2 items-center">
+			@AdminLogo()
+			<div class="hidden sm:block mr-1">
+				@NavLink("/", "Blog")
+				@NavLink("/admin/users", "Users")
+				@NavLink("/admin/bloggers", "Bloggers")
+				@NavLink("/admin/posts", "Posts")
+				@NavLink("/auth/logout", "Logout")
+			</div>
+			<div class="block sm:hidden dropdown dropdown-end dropdown-hover">
+				<div tabindex="0" role="button" class="btn btn-ghost rounded-btn">
+					<svg style="width:32px;height:32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M4 18L20 18" stroke="#000000" stroke-width="2" stroke-linecap="round"></path> <path d="M4 12L20 12" stroke="#000000" stroke-width="2" stroke-linecap="round"></path> <path d="M4 6L20 6" stroke="#000000" stroke-width="2" stroke-linecap="round"></path> </g></svg>
+				</div>
+				<ul tabindex="0" class="menu dropdown-content overflow-visible z-[2] p-2 shadow bg-yellow-500 w-52 mt-4">
+					<li>
+						@NavLink("/", "Blog")
+					</li>
+					<li>
+						@NavLink("/admin/users", "Users")
+					</li>
+					<li>
+						@NavLink("/admin/bloggers", "Bloggers")
+					</li>
+					<li>
+						@NavLink("/admin/posts", "Posts")
+					</li>
+					<li>
+						@NavLink("/auth/logout", "Logout")
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+}
+
+templ Navbar(user *models.User) {
+	<div class="bg-yellow-500 px-5 drop-shadow-md" style="border-bottom: 1px solid black">
+		<div class="flex justify-between p-2 items-center">
+			@Logo()
+			<div class="hidden sm:block mr-1">
+				if user != nil {
+					@NavLink("/admin", "Admin Panel")
+					@NavLink("/auth/logout", "Logout")
+				} else {
+					@NavLink("/", "Our Story")
+					@NavLink("/", "Membership")
+					@NavLink("/", "Write")
+					@NavLink("/login", "Sign In")
+				}
+			</div>
+			<div class="block sm:hidden dropdown dropdown-end dropdown-hover">
+				<div tabindex="0" role="button" class="btn btn-ghost rounded-btn">
+					<svg style="width:32px;height:32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M4 18L20 18" stroke="#000000" stroke-width="2" stroke-linecap="round"></path> <path d="M4 12L20 12" stroke="#000000" stroke-width="2" stroke-linecap="round"></path> <path d="M4 6L20 6" stroke="#000000" stroke-width="2" stroke-linecap="round"></path> </g></svg>
+				</div>
+				<ul tabindex="0" class="menu dropdown-content z-[1] p-2 shadow bg-yellow-500 w-52 mt-4">
+					if user != nil {
+						<li>
+							@NavLink("/admin", "Admin Panel")
+						</li>
+						<li>
+							@NavLink("/auth/logout", "Logout")
+						</li>
+					} else {
+						<li>
+							@NavLink("/", "Our Story")
+						</li>
+						<li>
+							@NavLink("/", "Membership")
+						</li>
+						<li>
+							@NavLink("/", "Write")
+						</li>
+						<li>
+							@NavLink("/login", "Sign In")
+						</li>
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
+}
+
+templ IndexNavbar(user *models.User) {
+	<div class="sm:col-span-2 flex justify-between p-2 items-center" style="border-bottom: 1px solid black">
+		@Logo()
+		<div class="hidden sm:block mr-1">
+			if user != nil {
+				@NavLink("/admin", "Admin Panel")
+				@NavLink("/auth/logout", "Logout")
+			} else {
+				@NavLink("/", "Our Story")
+				@NavLink("/", "Membership")
+				@NavLink("/", "Write")
+				@NavLink("/login", "Sign In")
+			}
+		</div>
+		<div class="block sm:hidden dropdown dropdown-end dropdown-hover">
+			<div tabindex="0" role="button" class="btn btn-ghost rounded-btn">
+				<svg style="width:32px;height:32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M4 18L20 18" stroke="#000000" stroke-width="2" stroke-linecap="round"></path> <path d="M4 12L20 12" stroke="#000000" stroke-width="2" stroke-linecap="round"></path> <path d="M4 6L20 6" stroke="#000000" stroke-width="2" stroke-linecap="round"></path> </g></svg>
+			</div>
+			<ul tabindex="0" class="menu dropdown-content z-[1] p-2 shadow bg-yellow-500 w-52 mt-4">
+				if user != nil {
+					<li>
+						@NavLink("/admin", "Admin Panel")
+					</li>
+					<li>
+						@NavLink("/auth/logout", "Logout")
+					</li>
+				} else {
+					<li>
+						@NavLink("/", "Our Story")
+					</li>
+					<li>
+						@NavLink("/", "Membership")
+					</li>
+					<li>
+						@NavLink("/", "Write")
+					</li>
+					<li>
+						@NavLink("/login", "Sign In")
+					</li>
+				}
+			</ul>
+		</div>
+	</div>
+}

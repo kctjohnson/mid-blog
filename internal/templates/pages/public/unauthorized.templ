@@ -1,0 +1,10 @@
+package public
+
+import "github.com/kctjohnson/mid-blog/internal/templates/components"
+
+templ Unauthorized() {
+	@components.Layout("Unauthorized") {
+		@components.Navbar(nil)
+		<p>You are not authorized to visit the previous link. Redirecting to home page.</p>
+	}
+}

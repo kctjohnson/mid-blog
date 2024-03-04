@@ -2,14 +2,15 @@ package admin
 
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "strconv"
+import "github.com/kctjohnson/mid-blog/internal/db/models"
 
 templ RandomPostLink(postID int, postTitle string) {
 	<a href={ templ.SafeURL("/" + strconv.Itoa(postID)) }>{ postTitle }</a>
 }
 
-templ Index() {
+templ Index(user models.User) {
 	@components.Layout("Admin") {
-		@Navbar()
+		@components.AdminNavbar(user)
 		<div class="prose p-8">
 			<h1>Admin Panel</h1>
 			<p>Manage all of the things here</p>

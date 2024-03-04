@@ -31,7 +31,12 @@ func (app Application) Index(w http.ResponseWriter, r *http.Request) {
 		posts[i].Blogger = blogger
 	}
 
-	public.Index(posts).Render(r.Context(), w)
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	if userData == nil {
+		public.Index(nil, posts).Render(r.Context(), w)
+	} else {
+		public.Index(userData.(UserInfo).User, posts).Render(r.Context(), w)
+	}
 }
 
 func (app Application) Post(w http.ResponseWriter, r *http.Request) {
@@ -76,7 +81,12 @@ func (app Application) Post(w http.ResponseWriter, r *http.Request) {
 		comments[i].User = user
 	}
 
-	public.Post(*post, comments).Render(r.Context(), w)
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	if userData == nil {
+		public.Post(nil, *post, comments).Render(r.Context(), w)
+	} else {
+		public.Post(userData.(UserInfo).User, *post, comments).Render(r.Context(), w)
+	}
 }
 
 func (app Application) LikePost(w http.ResponseWriter, r *http.Request) {
@@ -144,7 +154,8 @@ func (app Application) DislikePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app Application) Admin(w http.ResponseWriter, r *http.Request) {
-	admin.Index().Render(r.Context(), w)
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	admin.Index(*userData.(UserInfo).User).Render(r.Context(), w)
 }
 
 func (app Application) AdminPosts(w http.ResponseWriter, r *http.Request) {
@@ -162,7 +173,8 @@ func (app Application) AdminPosts(w http.ResponseWriter, r *http.Request) {
 		posts[i].Blogger = blogger
 	}
 
-	admin.Posts(posts).Render(r.Context(), w)
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	admin.Posts(*userData.(UserInfo).User, posts).Render(r.Context(), w)
 }
 
 func (app Application) AdminPost(w http.ResponseWriter, r *http.Request) {
@@ -207,7 +219,8 @@ func (app Application) AdminPost(w http.ResponseWriter, r *http.Request) {
 		comments[i].User = user
 	}
 
-	admin.Post(*post).Render(r.Context(), w)
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	admin.Post(*userData.(UserInfo).User, *post).Render(r.Context(), w)
 }
 
 func (app Application) DeletePost(w http.ResponseWriter, r *http.Request) {
@@ -239,7 +252,8 @@ func (app Application) AdminBloggers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	admin.Bloggers(bloggers).Render(r.Context(), w)
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	admin.Bloggers(*userData.(UserInfo).User, bloggers).Render(r.Context(), w)
 }
 
 func (app Application) AdminBlogger(w http.ResponseWriter, r *http.Request) {
@@ -261,7 +275,8 @@ func (app Application) AdminBlogger(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	admin.Blogger(*blogger).Render(r.Context(), w)
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	admin.Blogger(*userData.(UserInfo).User, *blogger).Render(r.Context(), w)
 }
 
 func (app Application) DeleteBlogger(w http.ResponseWriter, r *http.Request) {
@@ -293,7 +308,8 @@ func (app Application) AdminUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	admin.Users(users).Render(r.Context(), w)
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	admin.Users(*userData.(UserInfo).User, users).Render(r.Context(), w)
 }
 
 func (app Application) AdminUser(w http.ResponseWriter, r *http.Request) {
@@ -325,7 +341,8 @@ func (app Application) AdminUser(w http.ResponseWriter, r *http.Request) {
 		comments[i].User = user
 	}
 
-	admin.User(*user).Render(r.Context(), w)
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	admin.User(*userData.(UserInfo).User, *user).Render(r.Context(), w)
 }
 
 func (app Application) DeleteUser(w http.ResponseWriter, r *http.Request) {
@@ -517,4 +534,12 @@ func (app Application) CreatePostRandom(w http.ResponseWriter, r *http.Request) 
 	}
 
 	admin.RandomPostLink(post.ID, post.Title).Render(r.Context(), w)
+}
+
+func (app Application) LoginPage(w http.ResponseWriter, r *http.Request) {
+	public.Login().Render(r.Context(), w)
+}
+
+func (app Application) RegisterPage(w http.ResponseWriter, r *http.Request) {
+	public.Register().Render(r.Context(), w)
 }
