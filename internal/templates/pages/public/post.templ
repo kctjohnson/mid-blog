@@ -89,7 +89,7 @@ templ Comment(user *models.User, comment models.Comment) {
 }
 
 templ CommentsSection(user *models.User, post models.Post, comments []models.Comment) {
-	<div id="comments-section" class="w-full flex flex-col items-center pt-24">
+	<div id="comments-section" class={ "w-full flex flex-col items-center", templ.KV("pt-24", user != nil) }>
 		if user != nil {
 			<form id="comment-form" hx-post="/api/posts/comment" hx-target="#comments-section" hx-swap="outerHTML" class="w-full flex flex-col sm:items-center gap-4">
 				<input type="hidden" name="post_id" value={ strconv.Itoa(post.ID) }/>
