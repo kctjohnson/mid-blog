@@ -2,8 +2,11 @@ package public
 
 import "github.com/kctjohnson/mid-blog/internal/db/models"
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
-import "strings"
 import "strconv"
+
+css LockedContentDiv() {
+	mask-image: linear-gradient(to bottom, black 10%, transparent 80%);
+}
 
 templ LockedPostContent(post models.Post) {
 	<div class="w-full flex flex-col items-center pt-8 px-4">
@@ -13,12 +16,16 @@ templ LockedPostContent(post models.Post) {
 				<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
 				<p class="text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
 			</div>
-			<p>{ strings.Split(post.Content, "\n")[0] }</p>
-			<div class="divider"></div>
-			<div class="glass border-none shadow-none">
-				<p class="text-gray-300 w-full">Reading limit reached. Please <a class="link" href="/login">log in</a> to read the rest of the article.</p>
+			<div class={ LockedContentDiv() }>
+				<p>{ strings.Split(post.Content, "\n")[0] }</p>
 			</div>
-			<div class="divider"></div>
+			<div class="-translate-y-4">
+				<div class="divider"></div>
+				<div class="glass border-none shadow-none">
+					<p class="text-gray-500 w-full text-center">Reading limit reached. Please <a class="link" href="/login">log in</a> to read the rest of the article.</p>
+				</div>
+				<div class="divider"></div>
+			</div>
 			<p class="indent-8 capitalize">By { post.Blogger.FirstName } { post.Blogger.LastName } <em class="text-gray-300 normal-case">- Published on { strings.Split(post.CreateDate.String(), " ")[0] }</em></p>
 		</div>
 	</div>
