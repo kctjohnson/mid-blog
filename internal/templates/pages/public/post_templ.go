@@ -80,7 +80,7 @@ func LockedPostContent(post models.Post) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"divider\"></div><div class=\"glass border-none shadow-none\"><p class=\"text-gray-300 w-full\">This post is locked. Please <a class=\"link\" href=\"/login\">log in</a> to read the full content.</p></div><div class=\"divider\"></div><p class=\"indent-8 capitalize\">By ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p><div class=\"divider\"></div><div class=\"glass border-none shadow-none\"><p class=\"text-gray-300 w-full\">Reading limit reached. Please <a class=\"link\" href=\"/login\">log in</a> to read the rest of the article.</p></div><div class=\"divider\"></div><p class=\"indent-8 capitalize\">By ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
