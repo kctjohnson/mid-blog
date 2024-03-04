@@ -98,6 +98,137 @@ func (app Application) Post(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (app Application) Comment(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("Error: %s", err.Error())))
+		return
+	}
+
+	postIDStr := r.FormValue("post_id")
+	userIDStr := r.FormValue("user_id")
+	content := r.FormValue("content")
+
+	postID, err := strconv.Atoi(postIDStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	userID, err := strconv.Atoi(userIDStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	_, err = app.CommentRepo.Insert(repos.CommentInsertParameters{
+		UserID:  userID,
+		PostID:  postID,
+		Content: content,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Get the user
+	user, err := app.UserRepo.FindByID(userID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Get the post
+	post, err := app.PostRepo.FindByID(postID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Get the comments on the post
+	comments, err := app.PostRepo.Comments(post.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Fill in the users on all of the comments
+	for i := range comments {
+		user, err := app.UserRepo.FindByID(comments[i].UserID)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		comments[i].User = user
+	}
+
+	public.CommentsSection(user, *post, comments).Render(r.Context(), w)
+}
+
+func (app Application) LikeComment(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		http.Error(w, "id is required", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	comment, err := app.CommentRepo.FindByID(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	newLikes := comment.Likes + 1
+	comment, err = app.CommentRepo.Update(repos.CommentUpdateParameters{
+		ID:    comment.ID,
+		Likes: &newLikes,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	public.CommentStats(*comment).Render(r.Context(), w)
+}
+
+func (app Application) DislikeComment(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		http.Error(w, "id is required", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	comment, err := app.CommentRepo.FindByID(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	newDislikes := comment.Dislikes + 1
+	comment, err = app.CommentRepo.Update(repos.CommentUpdateParameters{
+		ID:       comment.ID,
+		Dislikes: &newDislikes,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	public.CommentStats(*comment).Render(r.Context(), w)
+}
+
 func (app Application) LikePost(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	if idStr == "" {
@@ -127,7 +258,7 @@ func (app Application) LikePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte(fmt.Sprintf("%d", post.Likes-post.Dislikes)))
+	public.PostStats(*post).Render(r.Context(), w)
 }
 
 func (app Application) DislikePost(w http.ResponseWriter, r *http.Request) {
@@ -159,7 +290,7 @@ func (app Application) DislikePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Write([]byte(fmt.Sprintf("%d", post.Likes-post.Dislikes)))
+	public.PostStats(*post).Render(r.Context(), w)
 }
 
 func (app Application) Admin(w http.ResponseWriter, r *http.Request) {

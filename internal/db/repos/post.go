@@ -97,6 +97,7 @@ func (r PostRepository) Comments(id int) ([]models.Comment, error) {
 		Select(models.Comment{}.SelectString()...).
 		From(models.Comment{}.TableString()).
 		Join("post ON comment.post_id = post.id").
+		OrderBy("create_date DESC").
 		Where(sq.Eq{"post_id": id}).ToSql()
 	if err != nil {
 		return nil, err
