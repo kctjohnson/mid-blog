@@ -161,7 +161,34 @@ func Index(user *models.User, posts []models.Post) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex justify-center items-center\"><div class=\"grid grid-rows-3 sm:grid-rows-4 pt-8 sm:pt-0\"><h1 class=\"text-4xl font-bold text-center\">Stay Mediocre, Go Somewhere</h1><p class=\"text-2xl text-center sm:text-left\">Find AI generated blog posts on any topic.</p><div class=\"row-span-2 justify-self-center sm:justify-self-start self-end\"><button class=\"btn rounded-full bg-black border-black text-white hover:bg-gray-800 mt-4\">Start Reading</button></div></div></div><p class=\"p-8 text-center indent-8\">Welcome to the pulsating heart of satire and technology, where mediocrity is not just embraced but celebrated with open arms! Our ingenious platform offers a smorgasbord of AI-generated content that stretches the boundaries of your imagination and tickles your funny bone. Engage with our eclectic selection of blog posts, each one crafted with clever algorithms that have mastered the art of tongue-in-cheek humor. At 'Stay Mediocre, Go Somewhere', every piece is a unique concoction of wit and wisdom, designed to give you a delightful reading experience that covers a gamut of topics. From the quirks of daily life to the absurdities of the digital age, we ensure the mundane transforms into the extraordinary — all at the convenience of your fingertips.</p></div><div class=\"flex flex-col items-center sm:block pt-8 pb-4 px-10 sm:px-40\"><div class=\"flex flex-row items-center pb-4\"><svg width=\"28\" height=\"29\" viewBox=\"0 0 28 29\" fill=\"none\" class=\"ji ah\"><path fill=\"#fff\" d=\"M0 .8h28v28H0z\"></path> <g opacity=\"0.8\" clip-path=\"url(#trending_svg__clip0)\"><path fill=\"#fff\" d=\"M4 4.8h20v20H4z\"></path> <circle cx=\"14\" cy=\"14.79\" r=\"9.5\" stroke=\"#000\"></circle> <path d=\"M5.46 18.36l4.47-4.48M9.97 13.87l3.67 3.66M13.67 17.53l5.1-5.09M16.62 11.6h3M19.62 11.6v3\" stroke=\"#000\" stroke-linecap=\"round\"></path></g> <defs><clipPath id=\"trending_svg__clip0\"><path fill=\"#fff\" transform=\"translate(4 4.8)\" d=\"M0 0h20v20H0z\"></path></clipPath></defs></svg><p class=\"text-sm font-semibold whitespace-nowrap\">Trending on Mid</p></div><div class=\"grid grid-cols-1 sm:grid-cols-3 gap-2 justify-items-center\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex justify-center items-center\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var11 = []any{"grid grid-rows-3 pt-8 sm:pt-0", templ.KV("sm:grid-rows-4", user == nil), templ.KV("sm:grid-rows-2", user != nil)}
+			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var11...)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.CSSClasses(templ_7745c5c3_Var11).String()))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><h1 class=\"text-4xl font-bold text-center\">Stay Mediocre, Go Somewhere</h1><p class=\"text-2xl text-center sm:text-left\">Find AI generated blog posts on any topic.</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if user == nil {
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"row-span-2 justify-self-center sm:justify-self-start self-end\"><label for=\"login-modal\" class=\"btn rounded-full bg-black border-black text-white hover:bg-gray-800 mt-4\">Start Reading</label></div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><p class=\"p-8 text-center indent-8\">Welcome to the pulsating heart of satire and technology, where mediocrity is not just embraced but celebrated with open arms! Our ingenious platform offers a smorgasbord of AI-generated content that stretches the boundaries of your imagination and tickles your funny bone. Engage with our eclectic selection of blog posts, each one crafted with clever algorithms that have mastered the art of tongue-in-cheek humor. At 'Stay Mediocre, Go Somewhere', every piece is a unique concoction of wit and wisdom, designed to give you a delightful reading experience that covers a gamut of topics. From the quirks of daily life to the absurdities of the digital age, we ensure the mundane transforms into the extraordinary — all at the convenience of your fingertips.</p></div><div class=\"flex flex-col items-center sm:block pt-8 pb-4 px-10 sm:px-40\"><div class=\"flex flex-row items-center pb-4\"><svg width=\"28\" height=\"29\" viewBox=\"0 0 28 29\" fill=\"none\" class=\"ji ah\"><path fill=\"#fff\" d=\"M0 .8h28v28H0z\"></path> <g opacity=\"0.8\" clip-path=\"url(#trending_svg__clip0)\"><path fill=\"#fff\" d=\"M4 4.8h20v20H4z\"></path> <circle cx=\"14\" cy=\"14.79\" r=\"9.5\" stroke=\"#000\"></circle> <path d=\"M5.46 18.36l4.47-4.48M9.97 13.87l3.67 3.66M13.67 17.53l5.1-5.09M16.62 11.6h3M19.62 11.6v3\" stroke=\"#000\" stroke-linecap=\"round\"></path></g> <defs><clipPath id=\"trending_svg__clip0\"><path fill=\"#fff\" transform=\"translate(4 4.8)\" d=\"M0 0h20v20H0z\"></path></clipPath></defs></svg><p class=\"text-sm font-semibold whitespace-nowrap\">Trending on Mid</p></div><div class=\"grid grid-cols-1 sm:grid-cols-3 gap-2 justify-items-center\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -171,7 +198,11 @@ func Index(user *models.User, posts []models.Post) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><input type=\"checkbox\" id=\"login-modal\" class=\"modal-toggle\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = JoinModal().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -181,6 +212,30 @@ func Index(user *models.User, posts []models.Post) templ.Component {
 			return templ_7745c5c3_Err
 		})
 		templ_7745c5c3_Err = components.Layout("MidBlog").Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if !templ_7745c5c3_IsBuffer {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func JoinModal() templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+		if !templ_7745c5c3_IsBuffer {
+			templ_7745c5c3_Buffer = templ.GetBuffer()
+			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var12 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var12 == nil {
+			templ_7745c5c3_Var12 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"modal px-40\" role=\"dialog\"><div class=\"modal-box flex flex-col items-center prose py-52\"><h1>Join Mid</h1><a class=\"link\" href=\"/register\">Sign up</a><p>Already have an account? <a class=\"link\" href=\"/login\">Log in.</a></p><a class=\"link\" href=\"/membership\">Questions?</a></div><label class=\"modal-backdrop\" for=\"login-modal\">Close</label></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

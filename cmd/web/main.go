@@ -69,6 +69,7 @@ func (app Application) StartServer() error {
 
 	r.Get("/", app.Index)
 	r.Get("/{id}", app.Post)
+	r.Get("/membership", app.Membership)
 
 	r.Get("/login", app.LoginPage)
 	r.Get("/register", app.RegisterPage)

@@ -48,9 +48,7 @@ templ Navbar(user *models.User) {
 					@NavLink("/admin", "Admin Panel")
 					@NavLink("/auth/logout", "Logout")
 				} else {
-					@NavLink("/", "Our Story")
-					@NavLink("/", "Membership")
-					@NavLink("/", "Write")
+					@NavLink("/membership", "Membership")
 					@NavLink("/login", "Sign In")
 				}
 			</div>
@@ -68,13 +66,7 @@ templ Navbar(user *models.User) {
 						</li>
 					} else {
 						<li>
-							@NavLink("/", "Our Story")
-						</li>
-						<li>
-							@NavLink("/", "Membership")
-						</li>
-						<li>
-							@NavLink("/", "Write")
+							@NavLink("/membership", "Membership")
 						</li>
 						<li>
 							@NavLink("/login", "Sign In")
@@ -94,9 +86,7 @@ templ IndexNavbar(user *models.User) {
 				@NavLink("/admin", "Admin Panel")
 				@NavLink("/auth/logout", "Logout")
 			} else {
-				@NavLink("/", "Our Story")
-				@NavLink("/", "Membership")
-				@NavLink("/", "Write")
+				@NavLink("/membership", "Membership")
 				@NavLink("/login", "Sign In")
 			}
 		</div>
@@ -114,13 +104,7 @@ templ IndexNavbar(user *models.User) {
 					</li>
 				} else {
 					<li>
-						@NavLink("/", "Our Story")
-					</li>
-					<li>
-						@NavLink("/", "Membership")
-					</li>
-					<li>
-						@NavLink("/", "Write")
+						@NavLink("/membership", "Membership")
 					</li>
 					<li>
 						@NavLink("/login", "Sign In")
