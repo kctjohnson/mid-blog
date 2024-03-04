@@ -1,0 +1,6 @@
+# Ignore static files.
+internal/templates/static/
+
+# Ignore templates.
+internal/templates/
+
