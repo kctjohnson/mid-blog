@@ -11,7 +11,7 @@ templ PostCard(post models.Post) {
 			<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
 			<p class="text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
 		</div>
-		<p class="font-bold m-1">{ post.Title }</p>
+		<p class="font-bold m-1 text-center">{ post.Title }</p>
 		<div class="flex">
 			<p class="text-xs m-1">{ strings.Split(post.CreateDate.String(), " ")[0] }</p>
 			<p
