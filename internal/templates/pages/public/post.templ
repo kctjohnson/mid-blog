@@ -56,10 +56,10 @@ templ CommentsSection(comments []models.Comment) {
 	</div>
 }
 
-templ Post(post models.Post, comments []models.Comment) {
+templ Post(user *models.User, post models.Post, comments []models.Comment) {
 	@components.Layout("MidBlog - " + post.Title) {
 		<div>
-			@components.Navbar()
+			@components.Navbar(user)
 			@PostContent(post)
 			@PostStats(post)
 			@CommentsSection(comments)

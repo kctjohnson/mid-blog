@@ -4,7 +4,7 @@ import "github.com/kctjohnson/mid-blog/internal/templates/components"
 
 templ Register() {
 	@components.Layout("Register") {
-		@components.Navbar()
+		@components.Navbar(nil)
 		<div class="prose flex flex-col p-8">
 			<h1>Register</h1>
 			<form class="flex flex-col" action="/auth/register" method="post">

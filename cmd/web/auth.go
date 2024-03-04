@@ -46,7 +46,7 @@ func (app Application) Register(w http.ResponseWriter, r *http.Request) {
 	var info UserInfo
 	info.User = newUser
 	app.SessionManager.Put(r.Context(), "user_data", info)
-	http.Redirect(w, r, "/admin", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func (app Application) Login(w http.ResponseWriter, r *http.Request) {
@@ -81,7 +81,7 @@ func (app Application) Login(w http.ResponseWriter, r *http.Request) {
 	app.SessionManager.Put(r.Context(), "user_data", UserInfo{
 		User: user,
 	})
-	http.Redirect(w, r, "/admin", http.StatusSeeOther)
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
 func (app Application) Logout(w http.ResponseWriter, r *http.Request) {

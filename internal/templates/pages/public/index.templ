@@ -27,10 +27,10 @@ templ PostCard(post models.Post) {
 	</a>
 }
 
-templ Index(posts []models.Post) {
+templ Index(user *models.User, posts []models.Post) {
 	@components.Layout("MidBlog") {
 		<div class="grid grid-cols-1 sm:grid-cols-2 bg-yellow-500 pl-5 pr-5" style="border-bottom: 1px solid black">
-			@components.IndexNavbar()
+			@components.IndexNavbar(user)
 			<div class="flex justify-center items-center">
 				<div class="grid grid-rows-3 sm:grid-rows-4 pt-8 sm:pt-0">
 					<h1 class="text-4xl font-bold text-center">Stay Mediocre, Go Somewhere</h1>
