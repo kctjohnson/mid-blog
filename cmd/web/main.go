@@ -82,8 +82,11 @@ func (app Application) StartServer() error {
 	})
 
 	r.Route("/api", func(r chi.Router) {
+		r.Post("/posts/comment", app.protectedRoute(app.Comment))
 		r.Post("/posts/{id}/like", app.protectedRoute(app.LikePost))
 		r.Post("/posts/{id}/dislike", app.protectedRoute(app.DislikePost))
+		r.Post("/comments/{id}/like", app.protectedRoute(app.LikeComment))
+		r.Post("/comments/{id}/dislike", app.protectedRoute(app.DislikeComment))
 	})
 
 	r.Route("/admin", func(r chi.Router) {
