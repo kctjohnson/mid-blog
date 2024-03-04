@@ -676,11 +676,6 @@ func CommentsSection(user *models.User, post models.Post, comments []models.Comm
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"prose text-gray-300\"><em><a class=\"link text-gray-400\" href=\"/login\">Log in</a> to comment</em></p>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
 		}
 		if len(comments) > 0 {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"divider\"></div><h2 class=\"text-xl font-bold pb-8\">Comments</h2><ul class=\"flex flex-col items-center gap-8 pb-8 px-4\">")
@@ -752,7 +747,7 @@ func Post(user *models.User, post models.Post, comments []models.Comment) templ.
 				return templ_7745c5c3_Err
 			}
 			if user == nil {
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"prose text-gray-300\"><em><a class=\"link text-gray-400\" href=\"/login\">Log in</a> to rate post</em></p>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"prose text-gray-300\"><em><a class=\"link text-gray-400\" href=\"/login\">Log in</a> to rate and comment</em></p>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

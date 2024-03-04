@@ -130,8 +130,6 @@ templ CommentsSection(user *models.User, post models.Post, comments []models.Com
 				<textarea name="content" class="textarea textarea-bordered sm:min-w-96 p-4 mx-4" placeholder="Write a comment..."></textarea>
 				<button type="submit" class="btn mx-4">Submit</button>
 			</form>
-		} else {
-			<p class="prose text-gray-300"><em><a class="link text-gray-400" href="/login">Log in</a> to comment</em></p>
 		}
 		if len(comments) > 0 {
 			<div class="divider"></div>
@@ -156,7 +154,7 @@ templ Post(user *models.User, post models.Post, comments []models.Comment) {
 			}
 			<div class="w-full flex flex-row justify-center pt-8 px-4 space-x-1">
 				if user == nil {
-					<p class="prose text-gray-300"><em><a class="link text-gray-400" href="/login">Log in</a> to rate post</em></p>
+					<p class="prose text-gray-300"><em><a class="link text-gray-400" href="/login">Log in</a> to rate and comment</em></p>
 				} else {
 					@PostStats(user, post)
 				}
