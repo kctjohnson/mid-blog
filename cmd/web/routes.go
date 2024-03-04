@@ -195,7 +195,8 @@ func (app Application) LikeComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	public.CommentStats(*comment).Render(r.Context(), w)
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	public.CommentStats(userData.(UserInfo).User, *comment).Render(r.Context(), w)
 }
 
 func (app Application) DislikeComment(w http.ResponseWriter, r *http.Request) {
@@ -227,7 +228,8 @@ func (app Application) DislikeComment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	public.CommentStats(*comment).Render(r.Context(), w)
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	public.CommentStats(userData.(UserInfo).User, *comment).Render(r.Context(), w)
 }
 
 func (app Application) LikePost(w http.ResponseWriter, r *http.Request) {
@@ -259,7 +261,8 @@ func (app Application) LikePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	public.PostStats(*post).Render(r.Context(), w)
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	public.PostStats(userData.(UserInfo).User, *post).Render(r.Context(), w)
 }
 
 func (app Application) DislikePost(w http.ResponseWriter, r *http.Request) {
@@ -291,7 +294,8 @@ func (app Application) DislikePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	public.PostStats(*post).Render(r.Context(), w)
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	public.PostStats(userData.(UserInfo).User, *post).Render(r.Context(), w)
 }
 
 func (app Application) Admin(w http.ResponseWriter, r *http.Request) {
