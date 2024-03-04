@@ -28,7 +28,7 @@ type Application struct {
 }
 
 func main() {
-	cfg := config.New(".")
+	cfg := config.New(".env")
 
 	client, err := chatgpt.NewClient(cfg.OpenAIKey)
 	if err != nil {
