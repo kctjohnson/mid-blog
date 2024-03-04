@@ -19,10 +19,12 @@ templ LockedPostContent(post models.Post) {
 			<div class={ LockedContentDiv() }>
 				<p>{ strings.Split(post.Content, "\n")[0] }</p>
 			</div>
-			<div class="-translate-y-4">
+			<div class="w-full -translate-y-4">
 				<div class="divider"></div>
-				<div class="glass border-none shadow-none">
-					<p class="text-gray-500 w-full text-center">Reading limit reached. Please <a class="link" href="/login">log in</a> to read the rest of the article.</p>
+				<div class="glass border-none shadow-none flex flex-col items-center">
+					<h1 class="font-thin pt-2">Create an account to continue reading.</h1>
+					<a class="link" href="/register">Sign up here</a>
+					<p class="text-gray-500 w-full text-center">Already have an account? <a class="link" href="/login">Sign in</a></p>
 				</div>
 				<div class="divider"></div>
 			</div>
