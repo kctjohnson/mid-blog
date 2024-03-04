@@ -57,7 +57,15 @@ func AdminNavbar(user models.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"block sm:hidden dropdown dropdown-end dropdown-hover\"><div tabindex=\"0\" role=\"button\" class=\"btn btn-ghost rounded-btn\"><svg style=\"width:32px;height:32px\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g id=\"SVGRepo_bgCarrier\" stroke-width=\"0\"></g><g id=\"SVGRepo_tracerCarrier\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></g><g id=\"SVGRepo_iconCarrier\"><path d=\"M4 18L20 18\" stroke=\"#000000\" stroke-width=\"2\" stroke-linecap=\"round\"></path> <path d=\"M4 12L20 12\" stroke=\"#000000\" stroke-width=\"2\" stroke-linecap=\"round\"></path> <path d=\"M4 6L20 6\" stroke=\"#000000\" stroke-width=\"2\" stroke-linecap=\"round\"></path></g></svg></div><ul tabindex=\"0\" class=\"menu dropdown-content overflow-visible z-[2] p-2 shadow bg-yellow-500 w-52 mt-4\"><li>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"block sm:hidden dropdown dropdown-end dropdown-hover\"><div tabindex=\"0\" role=\"button\" class=\"btn btn-ghost rounded-btn\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = HamburgerIcon(32, 32).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><ul tabindex=\"0\" class=\"menu dropdown-content overflow-visible z-[2] p-2 shadow bg-yellow-500 w-52 mt-4\"><li>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -160,7 +168,15 @@ func Navbar(user *models.User) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"block sm:hidden dropdown dropdown-end dropdown-hover\"><div tabindex=\"0\" role=\"button\" class=\"btn btn-ghost rounded-btn\"><svg style=\"width:32px;height:32px\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g id=\"SVGRepo_bgCarrier\" stroke-width=\"0\"></g><g id=\"SVGRepo_tracerCarrier\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></g><g id=\"SVGRepo_iconCarrier\"><path d=\"M4 18L20 18\" stroke=\"#000000\" stroke-width=\"2\" stroke-linecap=\"round\"></path> <path d=\"M4 12L20 12\" stroke=\"#000000\" stroke-width=\"2\" stroke-linecap=\"round\"></path> <path d=\"M4 6L20 6\" stroke=\"#000000\" stroke-width=\"2\" stroke-linecap=\"round\"></path></g></svg></div><ul tabindex=\"0\" class=\"menu dropdown-content z-[1] p-2 shadow bg-yellow-500 w-52 mt-4\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"block sm:hidden dropdown dropdown-end dropdown-hover\"><div tabindex=\"0\" role=\"button\" class=\"btn btn-ghost rounded-btn\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = HamburgerIcon(32, 32).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><ul tabindex=\"0\" class=\"menu dropdown-content z-[1] p-2 shadow bg-yellow-500 w-52 mt-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -270,7 +286,15 @@ func IndexNavbar(user *models.User) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"block sm:hidden dropdown dropdown-end dropdown-hover\"><div tabindex=\"0\" role=\"button\" class=\"btn btn-ghost rounded-btn\"><svg style=\"width:32px;height:32px\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><g id=\"SVGRepo_bgCarrier\" stroke-width=\"0\"></g><g id=\"SVGRepo_tracerCarrier\" stroke-linecap=\"round\" stroke-linejoin=\"round\"></g><g id=\"SVGRepo_iconCarrier\"><path d=\"M4 18L20 18\" stroke=\"#000000\" stroke-width=\"2\" stroke-linecap=\"round\"></path> <path d=\"M4 12L20 12\" stroke=\"#000000\" stroke-width=\"2\" stroke-linecap=\"round\"></path> <path d=\"M4 6L20 6\" stroke=\"#000000\" stroke-width=\"2\" stroke-linecap=\"round\"></path></g></svg></div><ul tabindex=\"0\" class=\"menu dropdown-content z-[1] p-2 shadow bg-yellow-500 w-52 mt-4\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"block sm:hidden dropdown dropdown-end dropdown-hover\"><div tabindex=\"0\" role=\"button\" class=\"btn btn-ghost rounded-btn\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = HamburgerIcon(32, 32).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><ul tabindex=\"0\" class=\"menu dropdown-content z-[1] p-2 shadow bg-yellow-500 w-52 mt-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
