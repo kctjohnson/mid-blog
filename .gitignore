@@ -3,7 +3,5 @@ tmp
 node_modules
 .parcel-cache
 dist/
-.postcssrc
-.prettierignore
 .env
 deploy/
