@@ -32,12 +32,14 @@ templ Index(user *models.User, posts []models.Post) {
 		<div class="grid grid-cols-1 sm:grid-cols-2 bg-yellow-500 pl-5 pr-5" style="border-bottom: 1px solid black">
 			@components.IndexNavbar(user)
 			<div class="flex justify-center items-center">
-				<div class="grid grid-rows-3 sm:grid-rows-4 pt-8 sm:pt-0">
+				<div class={ "grid grid-rows-3 pt-8 sm:pt-0", templ.KV("sm:grid-rows-4", user == nil), templ.KV("sm:grid-rows-2", user != nil) }>
 					<h1 class="text-4xl font-bold text-center">Stay Mediocre, Go Somewhere</h1>
 					<p class="text-2xl text-center sm:text-left">Find AI generated blog posts on any topic.</p>
-					<div class="row-span-2 justify-self-center sm:justify-self-start self-end">
-						<button class="btn rounded-full bg-black border-black text-white hover:bg-gray-800 mt-4">Start Reading</button>
-					</div>
+					if user == nil {
+						<div class="row-span-2 justify-self-center sm:justify-self-start self-end">
+							<label for="login-modal" class="btn rounded-full bg-black border-black text-white hover:bg-gray-800 mt-4">Start Reading</label>
+						</div>
+					}
 				</div>
 			</div>
 			<p class="p-8 text-center indent-8">
@@ -67,5 +69,19 @@ templ Index(user *models.User, posts []models.Post) {
 				}
 			</div>
 		</div>
+		<input type="checkbox" id="login-modal" class="modal-toggle"/>
+		@JoinModal()
 	}
+}
+
+templ JoinModal() {
+	<div class="modal px-40" role="dialog">
+		<div class="modal-box flex flex-col items-center prose py-52">
+			<h1>Join Mid</h1>
+			<a class="link" href="/register">Sign up</a>
+			<p>Already have an account? <a class="link" href="/login">Log in.</a></p>
+			<a class="link" href="/membership">Questions?</a>
+		</div>
+		<label class="modal-backdrop" for="login-modal">Close</label>
+	</div>
 }

@@ -39,6 +39,15 @@ func (app Application) Index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (app Application) Membership(w http.ResponseWriter, r *http.Request) {
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	if userData == nil {
+		public.Membership(nil).Render(r.Context(), w)
+	} else {
+		public.Membership(userData.(UserInfo).User).Render(r.Context(), w)
+	}
+}
+
 func (app Application) Post(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	if idStr == "" {
