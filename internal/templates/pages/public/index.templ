@@ -42,7 +42,7 @@ templ Index(user *models.User, posts []models.Post) {
 					}
 				</div>
 			</div>
-			<p class="p-8 text-center indent-8">
+			<p class="py-8 sm:p-8 text-center indent-8">
 				Welcome to the pulsating heart of satire and technology, where mediocrity is not just embraced but celebrated with open arms! Our ingenious platform offers a smorgasbord of AI-generated content that stretches the boundaries of your imagination and tickles your funny bone. Engage with our eclectic selection of blog posts, each one crafted with clever algorithms that have mastered the art of tongue-in-cheek humor. At 'Stay Mediocre, Go Somewhere', every piece is a unique concoction of wit and wisdom, designed to give you a delightful reading experience that covers a gamut of topics. From the quirks of daily life to the absurdities of the digital age, we ensure the mundane transforms into the extraordinary — all at the convenience of your fingertips.
 			</p>
 		</div>
@@ -75,8 +75,8 @@ templ Index(user *models.User, posts []models.Post) {
 }
 
 templ JoinModal() {
-	<div class="modal px-40" role="dialog">
-		<div class="modal-box flex flex-col items-center prose py-52">
+	<div class="modal sm:px-40" role="dialog">
+		<div class="modal-box flex flex-col items-center prose py-20 sm:py-52">
 			<h1>Join Mid</h1>
 			<a class="link" href="/register">Sign up</a>
 			<p>Already have an account? <a class="link" href="/login">Log in.</a></p>
