@@ -103,8 +103,8 @@ func (app Application) StartServer() error {
 		r.Delete("/users/{id}", app.protectedRoute(app.DeleteUser))
 
 		r.Get("/initializebloggers", app.protectedRoute(app.InitializeBloggers))
-
 		r.Post("/createpostrand", app.protectedRoute(app.CreatePostRandom))
+		r.Post("/createrandomblogger", app.protectedRoute(app.CreateRandomBlogger))
 	})
 
 	fmt.Println("Listening on :4231")
