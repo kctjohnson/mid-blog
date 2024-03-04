@@ -157,6 +157,7 @@ func (r UserRepository) Comments(id int) ([]models.Comment, error) {
 		Select(models.Comment{}.SelectString()...).
 		From(models.Comment{}.TableString()).
 		Join("user ON comment.user_id = user.id").
+		OrderBy("create_date DESC").
 		Where(sq.Eq{"user_id": id}).ToSql()
 	if err != nil {
 		return nil, err
