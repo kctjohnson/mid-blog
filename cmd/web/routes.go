@@ -9,6 +9,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/ayush6624/go-chatgpt"
 	"github.com/go-chi/chi/v5"
 	"github.com/kctjohnson/mid-blog/internal/db/models"
 	"github.com/kctjohnson/mid-blog/internal/db/repos"
@@ -643,20 +644,40 @@ func (app Application) CreatePostRandom(w http.ResponseWriter, r *http.Request) 
 	blogger := bloggers[rand.Intn(len(bloggers))]
 
 	// Get a random title
-	titleResp, err := app.BloggerAI.SimpleSend(
-		context.Background(),
-		"Generate me the title of an article about absolutely anything (Tech, science, literary, political, etc.). Try to keep it around 5-8 words.",
-	)
+	titleResp, err := app.BloggerAI.Send(context.Background(), &chatgpt.ChatCompletionRequest{
+		Temperature: 1.5,
+		Model:       chatgpt.GPT4,
+		Messages: []chatgpt.ChatMessage{
+			{
+				Role:    chatgpt.ChatGPTModelRoleSystem,
+				Content: "I am a blog generating system. I can generate blog post titles, and their content. Every title I generate will be entirely random.",
+			},
+			{
+				Role:    chatgpt.ChatGPTModelRoleUser,
+				Content: "Please make me a blog post title, ranging from 5-8 words, and it can be on any topic. Do not include any extra words outside of the title, and it doesn't need to be wrapped in quotes.",
+			},
+		},
+	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	title := strings.ReplaceAll(titleResp.Choices[0].Message.Content, "\"", "")
 
-	contentResp, err := app.BloggerAI.SimpleSend(
-		context.Background(),
-		"Write me a 5 paragraph article about this title \""+title+"\"",
-	)
+	contentResp, err := app.BloggerAI.Send(context.Background(), &chatgpt.ChatCompletionRequest{
+		Temperature: 1.0,
+		Model:       chatgpt.GPT35Turbo,
+		Messages: []chatgpt.ChatMessage{
+			{
+				Role:    chatgpt.ChatGPTModelRoleSystem,
+				Content: "I am a blog generating system. I can generate blog post titles, and their content. Every title I generate will be entirely random.",
+			},
+			{
+				Role:    chatgpt.ChatGPTModelRoleUser,
+				Content: "Based on this title, please write a blog post with 5 paragraphs, each with 5-8 sentences. The content should be relevant to the title, and should be entirely random. Do not include the title at the top of the content. Do not include any extra words outside of the content, and it doesn't need to be wrapped in quotes. The title is \"" + title + "\".",
+			},
+		},
+	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
