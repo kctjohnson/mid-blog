@@ -4,7 +4,7 @@ import "github.com/kctjohnson/mid-blog/internal/templates/components"
 
 templ Login() {
 	@components.Layout("Login") {
-		@components.Navbar()
+		@components.Navbar(nil)
 		<div class="prose flex flex-col p-8">
 			<h1>Login</h1>
 			<form class="flex flex-col" action="/auth/login" method="post">

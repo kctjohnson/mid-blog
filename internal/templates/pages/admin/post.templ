@@ -4,9 +4,9 @@ import "github.com/kctjohnson/mid-blog/internal/db/models"
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "strconv"
 
-templ Posts(posts []models.Post) {
+templ Posts(user models.User, posts []models.Post) {
 	@components.Layout("Admin - Posts") {
-		@Navbar()
+		@components.AdminNavbar(user)
 		<div class="p-8">
 			<table class="table">
 				<tr>
@@ -50,9 +50,9 @@ templ Posts(posts []models.Post) {
 	}
 }
 
-templ Post(post models.Post) {
+templ Post(user models.User, post models.Post) {
 	@components.Layout("Admin - Post") {
-		@Navbar()
+		@components.AdminNavbar(user)
 		<div class="p-8">
 			<p>{ strconv.Itoa(post.ID) }</p>
 			<p>{ post.Title }</p>

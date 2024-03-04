@@ -14,7 +14,7 @@ import "github.com/kctjohnson/mid-blog/internal/db/models"
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "strconv"
 
-func Posts(posts []models.Post) templ.Component {
+func Posts(user models.User, posts []models.Post) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -33,7 +33,7 @@ func Posts(posts []models.Post) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			templ_7745c5c3_Err = Navbar().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.AdminNavbar(user).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -168,7 +168,7 @@ func Posts(posts []models.Post) templ.Component {
 	})
 }
 
-func Post(post models.Post) templ.Component {
+func Post(user models.User, post models.Post) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -187,7 +187,7 @@ func Post(post models.Post) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			templ_7745c5c3_Err = Navbar().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = components.AdminNavbar(user).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
