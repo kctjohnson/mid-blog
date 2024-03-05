@@ -18,25 +18,34 @@ import (
 )
 
 func (app Application) Index(w http.ResponseWriter, r *http.Request) {
-	posts, err := app.PostRepo.All()
+	allPosts, err := app.PostRepo.All()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	for i := range posts {
-		blogger, err := app.BloggerRepo.FindByID(posts[i].BloggerID)
+	for i := range allPosts {
+		blogger, err := app.BloggerRepo.FindByID(allPosts[i].BloggerID)
 		if err != nil {
 			return
 		}
-		posts[i].Blogger = blogger
+		allPosts[i].Blogger = blogger
+	}
+
+	trendingPosts, err := app.PostRepo.GetTrending(3)
+	for i := range trendingPosts {
+		blogger, err := app.BloggerRepo.FindByID(trendingPosts[i].BloggerID)
+		if err != nil {
+			return
+		}
+		trendingPosts[i].Blogger = blogger
 	}
 
 	userData := app.SessionManager.Get(r.Context(), "user_data")
 	if userData == nil {
-		public.Index(nil, posts).Render(r.Context(), w)
+		public.Index(nil, trendingPosts, allPosts).Render(r.Context(), w)
 	} else {
-		public.Index(userData.(UserInfo).User, posts).Render(r.Context(), w)
+		public.Index(userData.(UserInfo).User, trendingPosts, allPosts).Render(r.Context(), w)
 	}
 }
 

@@ -2,18 +2,18 @@ package public
 
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "github.com/kctjohnson/mid-blog/internal/db/models"
-import "strings"
 import "strconv"
 
 templ PostCard(post models.Post) {
-	<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow w-full h-full flex flex-col items-center py-4">
+	<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow w-full flex flex-col items-center sm:items-start p-4">
 		<div class="flex flex-row items-center m-1">
 			<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
 			<p class="text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
 		</div>
-		<p class="font-bold m-1 text-center">{ post.Title }</p>
+		<p class="font-bold m-1 text-center sm:text-left">{ post.Title }</p>
+		<p class="m-1 text-gray-400 text-center sm:text-center" style="max-width:65ch">{ post.Content[0:65] + "..." }</p>
 		<div class="flex">
-			<p class="text-xs m-1">{ strings.Split(post.CreateDate.String(), " ")[0] }</p>
+			<p class="text-xs m-1">{ post.CreateDate.Format("Jan 02 2006, 3:04PM") }</p>
 			<p
 				class={
 					"text-xs m-1",
@@ -27,7 +27,53 @@ templ PostCard(post models.Post) {
 	</a>
 }
 
-templ Index(user *models.User, posts []models.Post) {
+templ TrendingCard(post models.Post) {
+	<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow flex flex-col items-center py-4">
+		<div class="flex flex-row items-center m-1">
+			<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
+			<p class="text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
+		</div>
+		<p class="font-bold m-1 text-center">{ post.Title }</p>
+		<div class="flex">
+			<p class="text-xs m-1">{ post.CreateDate.Format("Jan 02 2006, 3:04PM") }</p>
+			<p
+				class={
+					"text-xs m-1",
+					templ.KV("text-green-500", (post.Likes-post.Dislikes) > 0),
+					templ.KV("text-red-500", (post.Likes-post.Dislikes) < 0),
+				}
+			>
+				{ strconv.Itoa(post.Likes - post.Dislikes) }
+			</p>
+		</div>
+	</a>
+}
+
+templ TrendingPosts(posts []models.Post) {
+	<div class="flex flex-col items-center sm:block pt-8 pb-4 px-10 sm:px-40">
+		<div class="flex flex-row items-center pb-4">
+			@components.TrendingIcon(28, 29)
+			<p class="text-sm font-semibold whitespace-nowrap">Trending on Mid</p>
+		</div>
+		<div class="grid grid-cols-1 sm:grid-cols-3 gap-2 justify-items-center">
+			for _, post := range posts {
+				@TrendingCard(post)
+			}
+		</div>
+	</div>
+}
+
+templ Posts(posts []models.Post) {
+	<div class="flex flex-col items-center sm:block pt-8 pb-4 px-10 sm:px-40">
+		<div>
+			for _, post := range posts {
+				@PostCard(post)
+			}
+		</div>
+	</div>
+}
+
+templ Index(user *models.User, trendingPosts []models.Post, posts []models.Post) {
 	@components.Layout("MidBlog") {
 		<div class="grid grid-cols-1 sm:grid-cols-2 bg-yellow-500 pl-5 pr-5" style="border-bottom: 1px solid black">
 			@components.IndexNavbar(user)
@@ -46,17 +92,9 @@ templ Index(user *models.User, posts []models.Post) {
 				Welcome to the pulsating heart of satire and technology, where mediocrity is not just embraced but celebrated with open arms! Our ingenious platform offers a smorgasbord of AI-generated content that stretches the boundaries of your imagination and tickles your funny bone. Engage with our eclectic selection of blog posts, each one crafted with clever algorithms that have mastered the art of tongue-in-cheek humor. At 'Stay Mediocre, Go Somewhere', every piece is a unique concoction of wit and wisdom, designed to give you a delightful reading experience that covers a gamut of topics. From the quirks of daily life to the absurdities of the digital age, we ensure the mundane transforms into the extraordinary — all at the convenience of your fingertips.
 			</p>
 		</div>
-		<div class="flex flex-col items-center sm:block pt-8 pb-4 px-10 sm:px-40">
-			<div class="flex flex-row items-center pb-4">
-				@components.TrendingIcon(28, 29)
-				<p class="text-sm font-semibold whitespace-nowrap">Trending on Mid</p>
-			</div>
-			<div class="grid grid-cols-1 sm:grid-cols-3 gap-2 justify-items-center">
-				for _, post := range posts {
-					@PostCard(post)
-				}
-			</div>
-		</div>
+		@TrendingPosts(trendingPosts)
+		<div class="divider"></div>
+		@Posts(posts)
 		<input type="checkbox" id="login-modal" class="modal-toggle"/>
 		@JoinModal()
 	}

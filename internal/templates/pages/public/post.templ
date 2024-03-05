@@ -31,7 +31,7 @@ templ LockedPostContent(post models.Post) {
 				</div>
 				<div class="divider"></div>
 			</div>
-			<p class="indent-8 capitalize">By { post.Blogger.FirstName } { post.Blogger.LastName } <em class="text-gray-300 normal-case">- Published on { strings.Split(post.CreateDate.String(), " ")[0] }</em></p>
+			<p class="indent-8 capitalize">By { post.Blogger.FirstName } { post.Blogger.LastName } <em class="text-gray-300 normal-case">- Published on { post.CreateDate.Format("Jan 02 2006, 3:04PM") }</em></p>
 		</div>
 	</div>
 }
@@ -50,7 +50,7 @@ templ PostContent(post models.Post) {
 			for _, paragraph := range strings.Split(post.Content, "\n") {
 				<p>{ paragraph }</p>
 			}
-			<p class="indent-8 capitalize">By { post.Blogger.FirstName } { post.Blogger.LastName } <em class="text-gray-300 normal-case">- Published on { strings.Split(post.CreateDate.String(), " ")[0] }</em></p>
+			<p class="indent-8 capitalize">By { post.Blogger.FirstName } { post.Blogger.LastName } <em class="text-gray-300 normal-case">- Published on { post.CreateDate.Format("Jan 02 2006, 3:04PM") }</em></p>
 		</div>
 	</div>
 }
@@ -115,7 +115,7 @@ templ Comment(user *models.User, comment models.Comment) {
 		</div>
 		<p style="max-width: 65ch">{ comment.Content }</p>
 		<div class="flex flex-row items-center space-x-2">
-			<p><em class="text-sm text-gray-400">{ strings.Split(comment.CreateDate.String(), " ")[0] }</em></p>
+			<p><em class="text-sm text-gray-400">{ comment.CreateDate.Format("Jan 02 2006, 3:04PM") }</em></p>
 			@CommentStats(user, comment)
 		</div>
 	</li>
