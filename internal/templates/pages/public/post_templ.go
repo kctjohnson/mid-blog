@@ -115,14 +115,14 @@ func LockedPostContent(post models.Post) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div><div class=\"w-full -translate-y-4\"><div class=\"divider\"></div><div class=\"glass border-none shadow-none flex flex-col items-center\"><h1 class=\"font-thin pt-2\">Create an account to continue reading.</h1><a class=\"link\" href=\"/register\">Sign up here</a><p class=\"text-gray-500 w-full text-center\">Already have an account? <a class=\"link\" href=\"/login\">Sign in</a></p></div><div class=\"divider\"></div></div><p class=\"indent-8 capitalize\">By ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div><div class=\"w-full -translate-y-4\"><div class=\"divider\"></div><div class=\"glass border-none shadow-none flex flex-col items-center\"><h1 class=\"font-thin pt-2 text-center sm:text-left\">Create an account to continue reading.</h1><a class=\"link\" href=\"/register\">Sign up here</a><p class=\"text-gray-500 w-full text-center\">Already have an account? <a class=\"link\" href=\"/login\">Sign in</a></p></div><div class=\"divider\"></div></div><p class=\"indent-8 capitalize text-center sm:text-left\">By ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(post.Blogger.FirstName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/public/post.templ`, Line: 33, Col: 61}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/public/post.templ`, Line: 33, Col: 86}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -135,7 +135,7 @@ func LockedPostContent(post models.Post) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(post.Blogger.LastName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/public/post.templ`, Line: 33, Col: 87}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/public/post.templ`, Line: 33, Col: 112}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -148,7 +148,7 @@ func LockedPostContent(post models.Post) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(post.CreateDate.Format("Jan 02 2006, 3:04PM"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/public/post.templ`, Line: 33, Col: 190}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/public/post.templ`, Line: 33, Col: 215}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
