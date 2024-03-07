@@ -13,8 +13,8 @@ templ LockedPostContent(post models.Post) {
 		<div class="prose flex flex-col items-center">
 			<h1>{ post.Title }</h1>
 			<div class="flex flex-row items-center m-1">
-				<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
-				<p class="text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
+				@components.AvatarIcon(32, 32, post.Blogger.Avatar)
+				<p class="ml-2 text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
 				<div class="pl-2">
 					@PostRating(post)
 				</div>
@@ -41,8 +41,8 @@ templ PostContent(post models.Post) {
 		<div class="prose flex flex-col items-center">
 			<h1>{ post.Title }</h1>
 			<div class="flex flex-row items-center m-1">
-				<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
-				<p class="text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
+				@components.AvatarIcon(32, 32, post.Blogger.Avatar)
+				<p class="ml-2 text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
 				<div class="pl-2">
 					@PostRating(post)
 				</div>
@@ -110,8 +110,8 @@ templ CommentStats(user *models.User, comment models.Comment) {
 templ Comment(user *models.User, comment models.Comment) {
 	<li id={ "comment-" + strconv.Itoa(comment.ID) }>
 		<div class="flex flex-row items-center m-1">
-			<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
-			<p class="text-sm">{ comment.User.Username }</p>
+			@components.AvatarIcon(32, 32, user.Avatar)
+			<p class="ml-2 text-sm">{ comment.User.Username }</p>
 		</div>
 		<p style="max-width: 65ch">{ comment.Content }</p>
 		<div class="flex flex-row items-center space-x-2">
