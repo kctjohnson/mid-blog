@@ -274,6 +274,43 @@ func (app Application) LikePost(w http.ResponseWriter, r *http.Request) {
 	public.PostStats(userData.(UserInfo).User, *post).Render(r.Context(), w)
 }
 
+func (app Application) Blogger(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		http.Error(w, "id is required", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	blogger, err := app.BloggerRepo.FindByID(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	posts, err := app.BloggerRepo.Posts(blogger.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	for i := range posts {
+		posts[i].Blogger = blogger
+	}
+
+	userData := app.SessionManager.Get(r.Context(), "user_data")
+	if userData == nil {
+		public.Blogger(nil, *blogger, posts).Render(r.Context(), w)
+	} else {
+		public.Blogger(userData.(UserInfo).User, *blogger, posts).Render(r.Context(), w)
+	}
+}
+
 func (app Application) DislikePost(w http.ResponseWriter, r *http.Request) {
 	idStr := chi.URLParam(r, "id")
 	if idStr == "" {

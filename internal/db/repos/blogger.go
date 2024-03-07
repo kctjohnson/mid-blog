@@ -77,6 +77,25 @@ func (r BloggerRepository) FindByID(id int) (*models.Blogger, error) {
 	return &found, nil
 }
 
+func (r BloggerRepository) Posts(id int) ([]models.Post, error) {
+	query, args, err := sq.
+		Select(models.Post{}.SelectString()...).
+		From(models.Post{}.TableString()).
+		Where(sq.Eq{"blogger_id": id}).
+		ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	var found []models.Post
+	err = r.db.Select(&found, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return found, nil
+}
+
 func (r BloggerRepository) All() ([]models.Blogger, error) {
 	query, args, err := sq.
 		Select(models.Blogger{}.SelectString()...).
