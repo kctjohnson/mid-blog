@@ -587,7 +587,7 @@ func Comment(user *models.User, comment models.Comment) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.AvatarIcon(32, 32, user.Avatar).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = components.AvatarIcon(32, 32, comment.User.Avatar).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

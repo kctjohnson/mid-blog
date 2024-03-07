@@ -110,7 +110,7 @@ templ CommentStats(user *models.User, comment models.Comment) {
 templ Comment(user *models.User, comment models.Comment) {
 	<li id={ "comment-" + strconv.Itoa(comment.ID) }>
 		<div class="flex flex-row items-center m-1">
-			@components.AvatarIcon(32, 32, user.Avatar)
+			@components.AvatarIcon(32, 32, comment.User.Avatar)
 			<p class="ml-2 text-sm">{ comment.User.Username }</p>
 		</div>
 		<p style="max-width: 65ch">{ comment.Content }</p>
