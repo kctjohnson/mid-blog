@@ -75,6 +75,8 @@ func (app Application) StartServer() error {
 	r.Get("/register", app.RegisterPage)
 	r.Get("/unauthorized", app.UnauthorizedPage)
 
+	r.Get("/blogger/{id}", app.Blogger)
+
 	r.Route("/auth", func(r chi.Router) {
 		r.Post("/login", app.Login)
 		r.Post("/register", app.Register)

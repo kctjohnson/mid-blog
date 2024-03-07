@@ -4,12 +4,19 @@ import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "github.com/kctjohnson/mid-blog/internal/db/models"
 import "strconv"
 
+script AuthorLink(authorID int) {
+	event.preventDefault();
+	event.stopPropagation();
+	window.location.href = "/blogger/" + authorID;
+}
+
 templ PostCard(post models.Post) {
-	<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow w-full flex flex-col items-center sm:items-start p-4">
-		<div class="flex flex-row items-center m-1">
+	<div class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow w-full flex flex-col items-center sm:items-start p-4 overflow-hidden relative">
+		<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="absolute inset-0 z-[0]"></a>
+		<p onclick={ AuthorLink(post.BloggerID) } class="gap-2 z-[1] flex flex-row items-center m-1 cursor-pointer transition-all rounded-lg hover:drop-shadow-lg hover:underline child ml-2 text-sm capitalize">
 			@components.AvatarIcon(32, 32, post.Blogger.Avatar)
-			<p class="ml-2 text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
-		</div>
+			{ post.Blogger.FirstName } { post.Blogger.LastName }
+		</p>
 		<p class="font-bold m-1 text-center sm:text-left">{ post.Title }</p>
 		<p class="m-1 text-gray-400 text-center sm:text-center" style="max-width:65ch">{ post.Content[0:65] + "..." }</p>
 		<div class="flex">
@@ -24,15 +31,16 @@ templ PostCard(post models.Post) {
 				{ strconv.Itoa(post.Likes - post.Dislikes) }
 			</p>
 		</div>
-	</a>
+	</div>
 }
 
 templ TrendingCard(post models.Post) {
-	<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow flex flex-col items-center py-4">
-		<div class="flex flex-row items-center m-1">
+	<div class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow flex flex-col items-center py-4 overflow-hidden relative">
+		<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="absolute inset-0 z-[0]"></a>
+		<p onclick={ AuthorLink(post.BloggerID) } class="gap-2 z-[1] flex flex-row items-center m-1 cursor-pointer transition-all rounded-lg hover:drop-shadow-lg hover:underline child ml-2 text-sm capitalize">
 			@components.AvatarIcon(32, 32, post.Blogger.Avatar)
-			<p class="ml-2 text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
-		</div>
+			{ post.Blogger.FirstName } { post.Blogger.LastName }
+		</p>
 		<p class="font-bold m-1 text-center">{ post.Title }</p>
 		<div class="flex">
 			<p class="text-xs m-1">{ post.CreateDate.Format("Jan 02 2006, 3:04PM") }</p>
@@ -46,7 +54,7 @@ templ TrendingCard(post models.Post) {
 				{ strconv.Itoa(post.Likes - post.Dislikes) }
 			</p>
 		</div>
-	</a>
+	</div>
 }
 
 templ TrendingPosts(posts []models.Post) {

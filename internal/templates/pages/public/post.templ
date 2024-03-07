@@ -14,7 +14,7 @@ templ LockedPostContent(post models.Post) {
 			<h1>{ post.Title }</h1>
 			<div class="flex flex-row items-center m-1">
 				@components.AvatarIcon(32, 32, post.Blogger.Avatar)
-				<p class="ml-2 text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
+				<a href={ templ.SafeURL("/blogger/" + strconv.Itoa(post.BloggerID)) } class="no-underline ml-2 text-sm capitalize hover:underline">{ post.Blogger.FirstName } { post.Blogger.LastName }</a>
 				<div class="pl-2">
 					@PostRating(post)
 				</div>
@@ -31,7 +31,11 @@ templ LockedPostContent(post models.Post) {
 				</div>
 				<div class="divider"></div>
 			</div>
-			<p class="indent-8 capitalize text-center sm:text-left">By { post.Blogger.FirstName } { post.Blogger.LastName } <em class="text-gray-300 normal-case">- Published on { post.CreateDate.Format("Jan 02 2006, 3:04PM") }</em></p>
+			<p class="indent-8 capitalize text-center sm:text-left">
+				By
+				<a href={ templ.SafeURL("/blogger/" + strconv.Itoa(post.BloggerID)) } class="no-underline capitalize hover:underline">{ post.Blogger.FirstName } { post.Blogger.LastName }</a>
+				<em class="text-gray-300 normal-case">- Published on { post.CreateDate.Format("Jan 02 2006, 3:04PM") }</em>
+			</p>
 		</div>
 	</div>
 }
@@ -109,7 +113,7 @@ templ CommentStats(user *models.User, comment models.Comment) {
 
 templ Comment(user *models.User, comment models.Comment) {
 	<li id={ "comment-" + strconv.Itoa(comment.ID) }>
-		<div class="flex flex-row items-center m-1">
+		<div class="flex flex-row items-center">
 			@components.AvatarIcon(32, 32, comment.User.Avatar)
 			<p class="ml-2 text-sm">{ comment.User.Username }</p>
 		</div>

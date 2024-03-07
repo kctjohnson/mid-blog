@@ -1,0 +1,24 @@
+package public
+
+import "github.com/kctjohnson/mid-blog/internal/db/models"
+import "github.com/kctjohnson/mid-blog/internal/templates/components"
+
+templ Blogger(user *models.User, blogger models.Blogger, bloggersPosts []models.Post) {
+	@components.Layout("Blogger - " + blogger.FirstName + " " + blogger.LastName) {
+		@components.Navbar(user)
+		<div class="container flex flex-col items-center">
+			<div class="prose pt-8">
+				<div class="flex justify-center items-center p-2">
+					@components.AvatarIcon(64, 64, blogger.Avatar)
+					<h1 class="ml-4" style="margin-bottom:0">{ blogger.FirstName } { blogger.LastName }</h1>
+				</div>
+				<p class="text-center">{ blogger.Bio }</p>
+			</div>
+			<div class="divider py-8"></div>
+			<div class="prose">
+				<h1>Posts</h1>
+			</div>
+			@Posts(bloggersPosts)
+		</div>
+	}
+}
