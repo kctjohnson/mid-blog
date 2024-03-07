@@ -27,13 +27,14 @@ type BloggerInsertParameters struct {
 	Age       int           `db:"age"`
 	Gender    models.Gender `db:"gender"`
 	Bio       string        `db:"bio"`
+	Avatar    int           `db:"avatar"`
 }
 
 func (r BloggerRepository) Insert(newBlogger BloggerInsertParameters) (*models.Blogger, error) {
 	query, args, err := sq.
 		Insert(models.Blogger{}.TableString()).
-		Columns("create_date", "first_name", "last_name", "email", "age", "gender", "bio").
-		Values(time.Now(), newBlogger.FirstName, newBlogger.LastName, newBlogger.Email, newBlogger.Age, newBlogger.Gender, newBlogger.Bio).
+		Columns("create_date", "first_name", "last_name", "email", "age", "gender", "bio", "avatar").
+		Values(time.Now(), newBlogger.FirstName, newBlogger.LastName, newBlogger.Email, newBlogger.Age, newBlogger.Gender, newBlogger.Bio, newBlogger.Avatar).
 		ToSql()
 	if err != nil {
 		return nil, err
@@ -102,6 +103,7 @@ type BloggerUpdateParameters struct {
 	Age       *int           `db:"age"`
 	Gender    *models.Gender `db:"gender"`
 	Bio       *string        `db:"bio"`
+	Avatar    *int           `db:"avatar"`
 }
 
 func (r BloggerRepository) Update(updateBlogger BloggerUpdateParameters) (*models.Blogger, error) {
@@ -129,6 +131,10 @@ func (r BloggerRepository) Update(updateBlogger BloggerUpdateParameters) (*model
 
 	if updateBlogger.Bio != nil {
 		update = update.Set("bio", *updateBlogger.Bio)
+	}
+
+	if updateBlogger.Avatar != nil {
+		update = update.Set("avatar", *updateBlogger.Avatar)
 	}
 
 	query, args, err := update.Where(sq.Eq{"id": updateBlogger.ID}).ToSql()
