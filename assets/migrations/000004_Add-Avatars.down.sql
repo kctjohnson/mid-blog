@@ -1,0 +1,5 @@
+ALTER TABLE user
+DROP COLUMN avatar;
+
+ALTER TABLE blogger
+DROP COLUMN avatar;

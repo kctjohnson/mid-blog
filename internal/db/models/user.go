@@ -8,6 +8,7 @@ type User struct {
 	Password   string    `db:"password"`
 	Email      string    `db:"email"`
 	CreateDate time.Time `db:"create_date"`
+	Avatar     int       `db:"avatar"`
 }
 
 func (m User) SelectString() []string {
@@ -17,6 +18,7 @@ func (m User) SelectString() []string {
 		"user.password",
 		"user.email",
 		"user.create_date",
+		"user.avatar",
 	}
 }
 

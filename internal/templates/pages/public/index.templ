@@ -7,8 +7,8 @@ import "strconv"
 templ PostCard(post models.Post) {
 	<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow w-full flex flex-col items-center sm:items-start p-4">
 		<div class="flex flex-row items-center m-1">
-			<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
-			<p class="text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
+			@components.AvatarIcon(32, 32, post.Blogger.Avatar)
+			<p class="ml-2 text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
 		</div>
 		<p class="font-bold m-1 text-center sm:text-left">{ post.Title }</p>
 		<p class="m-1 text-gray-400 text-center sm:text-center" style="max-width:65ch">{ post.Content[0:65] + "..." }</p>
@@ -30,8 +30,8 @@ templ PostCard(post models.Post) {
 templ TrendingCard(post models.Post) {
 	<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow flex flex-col items-center py-4">
 		<div class="flex flex-row items-center m-1">
-			<div class="skeleton w-6 h-6 rounded-full mr-2"></div>
-			<p class="text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
+			@components.AvatarIcon(32, 32, post.Blogger.Avatar)
+			<p class="ml-2 text-sm capitalize">{ post.Blogger.FirstName } { post.Blogger.LastName }</p>
 		</div>
 		<p class="font-bold m-1 text-center">{ post.Title }</p>
 		<div class="flex">

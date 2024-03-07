@@ -172,6 +172,51 @@ func (r UserRepository) Comments(id int) ([]models.Comment, error) {
 	return found, nil
 }
 
+type UserUpdateInput struct {
+	ID       int     `db:"id"`
+	Username *string `db:"username"`
+	Password *string `db:"password"`
+	Email    *string `db:"email"`
+	Avatar   *int    `db:"avatar"`
+}
+
+func (r UserRepository) Update(updateUser UserUpdateInput) (*models.User, error) {
+	update := sq.Update(models.User{}.TableString())
+
+	if updateUser.Username != nil {
+		update = update.Set("username", *updateUser.Username)
+	}
+
+	if updateUser.Password != nil {
+		update = update.Set("password", *updateUser.Password)
+	}
+
+	if updateUser.Email != nil {
+		update = update.Set("email", *updateUser.Email)
+	}
+
+	if updateUser.Avatar != nil {
+		update = update.Set("avatar", *updateUser.Avatar)
+	}
+
+	query, args, err := update.Where(sq.Eq{"id": updateUser.ID}).ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = r.db.Exec(query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	found, err := r.FindByID(updateUser.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return found, nil
+}
+
 func (r UserRepository) Delete(id int) error {
 	query, args, err := sq.
 		Delete(models.User{}.TableString()).

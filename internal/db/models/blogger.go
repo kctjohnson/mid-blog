@@ -15,6 +15,7 @@ type Blogger struct {
 	Age       int    `db:"age"`
 	Gender    Gender `db:"gender"`
 	Bio       string `db:"bio"`
+	Avatar    int    `db:"avatar"`
 }
 
 func (m Blogger) SelectString() []string {
@@ -26,6 +27,7 @@ func (m Blogger) SelectString() []string {
 		"blogger.age",
 		"blogger.gender",
 		"blogger.bio",
+		"blogger.avatar",
 	}
 }
 

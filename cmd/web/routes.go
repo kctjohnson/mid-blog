@@ -625,6 +625,7 @@ func (app Application) InitializeBloggers(w http.ResponseWriter, r *http.Request
 				Age:       age,
 				Gender:    gender,
 				Bio:       bio,
+				Avatar:    rand.Intn(9) + 1,
 			})
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -781,6 +782,7 @@ func (app Application) CreateRandomBlogger(w http.ResponseWriter, r *http.Reques
 		Age:       age,
 		Gender:    gender,
 		Bio:       bio,
+		Avatar:    rand.Intn(9) + 1,
 	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
