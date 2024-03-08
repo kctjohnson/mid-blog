@@ -108,7 +108,7 @@ func (c ContentCreator) GenerateBio(
 		context.Background(),
 		&chatgpt.ChatCompletionRequest{
 			Temperature: temperature,
-			Model:       chatgpt.GPT4,
+			Model:       chatgpt.GPT35Turbo,
 			Messages: []chatgpt.ChatMessage{
 				{
 					Role:    chatgpt.ChatGPTModelRoleSystem,
@@ -131,7 +131,7 @@ func (c ContentCreator) GenerateBio(
 func (c ContentCreator) GenerateTitle(temperature float64, bio string) (string, error) {
 	titleResp, err := c.gptClient.Send(context.Background(), &chatgpt.ChatCompletionRequest{
 		Temperature: temperature,
-		Model:       chatgpt.GPT4,
+		Model:       chatgpt.GPT35Turbo,
 		Messages: []chatgpt.ChatMessage{
 			{
 				Role:    chatgpt.ChatGPTModelRoleSystem,
