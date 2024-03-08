@@ -1,15 +1,12 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"math/rand"
 	"net/http"
 	"strconv"
-	"strings"
 	"sync"
 
-	"github.com/ayush6624/go-chatgpt"
 	"github.com/go-chi/chi/v5"
 	"github.com/kctjohnson/mid-blog/internal/db/models"
 	"github.com/kctjohnson/mid-blog/internal/db/repos"
@@ -566,61 +563,25 @@ func (app Application) InitializeBloggers(w http.ResponseWriter, r *http.Request
 	for i := 0; i < 5; i++ {
 		wg.Add(1)
 		go func() {
-			firstNameResp, err := app.BloggerAI.Send(
-				context.Background(),
-				&chatgpt.ChatCompletionRequest{
-					Temperature: 1.0,
-					Model:       chatgpt.GPT35Turbo,
-					Messages: []chatgpt.ChatMessage{
-						{
-							Role:    chatgpt.ChatGPTModelRoleSystem,
-							Content: "I am a blogger generating system. I can generate bloggers, and their posts. Every blogger I generate will be entirely random.",
-						},
-						{
-							Role:    chatgpt.ChatGPTModelRoleUser,
-							Content: "In one word, give me a random first name. It can be any name, real or made up, and should only contain letters. Do not give me anything else, and do not give any punctuation.",
-						},
-					},
-				},
-			)
+			firstName, err := app.ContentCreator.GenerateFirstName(1.0)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			firstName := firstNameResp.Choices[0].Message.Content
 
-			lastNameResp, err := app.BloggerAI.Send(
-				context.Background(),
-				&chatgpt.ChatCompletionRequest{
-					Temperature: 1.0,
-					Model:       chatgpt.GPT35Turbo,
-					Messages: []chatgpt.ChatMessage{
-						{
-							Role:    chatgpt.ChatGPTModelRoleSystem,
-							Content: "I am a blogger generating system. I can generate bloggers, and their posts. Every blogger I generate will be entirely random.",
-						},
-						{
-							Role:    chatgpt.ChatGPTModelRoleUser,
-							Content: "In one word, give me a random last name. It can be any name, real or made up, and should only contain letters. Do not give me anything else, and do not give any punctuation.",
-						},
-					},
-				},
-			)
+			lastName, err := app.ContentCreator.GenerateLastName(1.0)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			lastName := lastNameResp.Choices[0].Message.Content
 
-			emailResp, err := app.BloggerAI.SimpleSend(
-				context.Background(),
-				"I need to make a new email, give me a random email name.",
-			)
+			emailName, err := app.ContentCreator.GenerateEmail(1.0)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			email := fmt.Sprintf("%s@mid.com", emailResp.Choices[0].Message.Content)
+
+			email := fmt.Sprintf("%s@mid.com", emailName)
 
 			age := rand.Int()%45 + 15
 
@@ -632,28 +593,11 @@ func (app Application) InitializeBloggers(w http.ResponseWriter, r *http.Request
 				gender = models.Female
 			}
 
-			bioResp, err := app.BloggerAI.Send(
-				context.Background(),
-				&chatgpt.ChatCompletionRequest{
-					Temperature: 1.5,
-					Model:       chatgpt.GPT4,
-					Messages: []chatgpt.ChatMessage{
-						{
-							Role:    chatgpt.ChatGPTModelRoleSystem,
-							Content: "I am a blogger generating system. I can generate bloggers, and their posts. Every blogger I generate will be entirely random.",
-						},
-						{
-							Role:    chatgpt.ChatGPTModelRoleUser,
-							Content: "Write me a random bio that is AT MAX 255 characters long. I want the bio to have the blogger leaning towards one or two specific subjects of interest, or things that they like. Only include the blogger's bio in your response, do not include anything else, do not add any surrounding quotes around it.",
-						},
-					},
-				},
-			)
+			bio, err := app.ContentCreator.GenerateBio(1.5, firstName, lastName)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			bio := bioResp.Choices[0].Message.Content
 
 			_, err = app.BloggerRepo.Insert(repos.BloggerInsertParameters{
 				FirstName: firstName,
@@ -684,25 +628,17 @@ func (app Application) InitializeBloggers(w http.ResponseWriter, r *http.Request
 	for _, blogger := range bloggers {
 		wg.Add(1)
 		go func(b models.Blogger) {
-			titleResp, err := app.BloggerAI.SimpleSend(
-				context.Background(),
-				"Generate me the title of an article about absolutely anything (Tech, science, literary, political, etc.). Try to keep it around 5-8 words.",
-			)
+			title, err := app.ContentCreator.GenerateTitle(1.5, blogger.Bio)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			title := strings.ReplaceAll(titleResp.Choices[0].Message.Content, "\"", "")
 
-			contentResp, err := app.BloggerAI.SimpleSend(
-				context.Background(),
-				"Write me a 5 paragraph article about this title \""+title+"\"",
-			)
+			content, err := app.ContentCreator.GeneratePost(1.0, title)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
 				return
 			}
-			content := contentResp.Choices[0].Message.Content
 
 			_, err = app.PostRepo.Insert(repos.PostInsertParameters{
 				BloggerID: b.ID,
@@ -723,61 +659,25 @@ func (app Application) InitializeBloggers(w http.ResponseWriter, r *http.Request
 }
 
 func (app Application) CreateRandomBlogger(w http.ResponseWriter, r *http.Request) {
-	firstNameResp, err := app.BloggerAI.Send(
-		context.Background(),
-		&chatgpt.ChatCompletionRequest{
-			Temperature: 1.0,
-			Model:       chatgpt.GPT35Turbo,
-			Messages: []chatgpt.ChatMessage{
-				{
-					Role:    chatgpt.ChatGPTModelRoleSystem,
-					Content: "I am a blogger generating system. I can generate bloggers, and their posts. Every blogger I generate will be entirely random.",
-				},
-				{
-					Role:    chatgpt.ChatGPTModelRoleUser,
-					Content: "In one word, give me a random first name. It can be any name, real or made up, and should only contain letters. Do not give me anything else, and do not give any punctuation.",
-				},
-			},
-		},
-	)
+	firstName, err := app.ContentCreator.GenerateFirstName(1.0)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	firstName := firstNameResp.Choices[0].Message.Content
 
-	lastNameResp, err := app.BloggerAI.Send(
-		context.Background(),
-		&chatgpt.ChatCompletionRequest{
-			Temperature: 1.0,
-			Model:       chatgpt.GPT35Turbo,
-			Messages: []chatgpt.ChatMessage{
-				{
-					Role:    chatgpt.ChatGPTModelRoleSystem,
-					Content: "I am a blogger generating system. I can generate bloggers, and their posts. Every blogger I generate will be entirely random.",
-				},
-				{
-					Role:    chatgpt.ChatGPTModelRoleUser,
-					Content: "In one word, give me a random last name. It can be any name, real or made up, and should only contain letters. Do not give me anything else, and do not give any punctuation.",
-				},
-			},
-		},
-	)
+	lastName, err := app.ContentCreator.GenerateLastName(1.0)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	lastName := lastNameResp.Choices[0].Message.Content
 
-	emailResp, err := app.BloggerAI.SimpleSend(
-		context.Background(),
-		"I need to make a new email, give me a random email name.",
-	)
+	emailName, err := app.ContentCreator.GenerateEmail(1.0)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	email := fmt.Sprintf("%s@mid.com", emailResp.Choices[0].Message.Content)
+
+	email := fmt.Sprintf("%s@mid.com", emailName)
 
 	age := rand.Int()%45 + 15
 
@@ -789,28 +689,11 @@ func (app Application) CreateRandomBlogger(w http.ResponseWriter, r *http.Reques
 		gender = models.Female
 	}
 
-	bioResp, err := app.BloggerAI.Send(
-		context.Background(),
-		&chatgpt.ChatCompletionRequest{
-			Temperature: 1.2,
-			Model:       chatgpt.GPT4,
-			Messages: []chatgpt.ChatMessage{
-				{
-					Role:    chatgpt.ChatGPTModelRoleSystem,
-					Content: "I am a blogger generating system. I can generate bloggers, and their posts. Every blogger I generate will be entirely random.",
-				},
-				{
-					Role:    chatgpt.ChatGPTModelRoleUser,
-					Content: "Write me a random bio that is AT MAX 255 characters long. I want the bio to have the blogger leaning towards one or two specific subjects of interest, or things that they like. Only include the blogger's bio in your response, do not include anything else, do not add any surrounding quotes around it. The blogger's name is " + firstName + " " + lastName + ".",
-				},
-			},
-		},
-	)
+	bio, err := app.ContentCreator.GenerateBio(1.5, firstName, lastName)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	bio := bioResp.Choices[0].Message.Content
 
 	_, err = app.BloggerRepo.Insert(repos.BloggerInsertParameters{
 		FirstName: firstName,
@@ -841,45 +724,17 @@ func (app Application) CreatePostRandom(w http.ResponseWriter, r *http.Request) 
 	blogger := bloggers[rand.Intn(len(bloggers))]
 
 	// Get a random title
-	titleResp, err := app.BloggerAI.Send(context.Background(), &chatgpt.ChatCompletionRequest{
-		Temperature: 1.5,
-		Model:       chatgpt.GPT4,
-		Messages: []chatgpt.ChatMessage{
-			{
-				Role:    chatgpt.ChatGPTModelRoleSystem,
-				Content: "I am a blog generating system. I can generate blog post titles, and their content. Every title I generate will be entirely random.",
-			},
-			{
-				Role:    chatgpt.ChatGPTModelRoleUser,
-				Content: "Please make me a blog post title, ranging from 5-8 words, and it can be on any topic. Do not include any extra words outside of the title, and it doesn't need to be wrapped in quotes. Base the topic for the title based on the bio of the blogger. The bio is \"" + blogger.Bio + "\".",
-			},
-		},
-	})
+	title, err := app.ContentCreator.GenerateTitle(1.5, blogger.Bio)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	title := strings.ReplaceAll(titleResp.Choices[0].Message.Content, "\"", "")
 
-	contentResp, err := app.BloggerAI.Send(context.Background(), &chatgpt.ChatCompletionRequest{
-		Temperature: 1.0,
-		Model:       chatgpt.GPT35Turbo,
-		Messages: []chatgpt.ChatMessage{
-			{
-				Role:    chatgpt.ChatGPTModelRoleSystem,
-				Content: "I am a blog generating system. I can generate blog post titles, and their content. Every title I generate will be entirely random.",
-			},
-			{
-				Role:    chatgpt.ChatGPTModelRoleUser,
-				Content: "Based on this title, please write a blog post with 5 paragraphs, each with 5-8 sentences. The content should be relevant to the title, and should be entirely random. Do not include the title at the top of the content. Do not include any extra words outside of the content, and it doesn't need to be wrapped in quotes. The title is \"" + title + "\".",
-			},
-		},
-	})
+	content, err := app.ContentCreator.GeneratePost(1.0, title)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	content := contentResp.Choices[0].Message.Content
 
 	post, err := app.PostRepo.Insert(repos.PostInsertParameters{
 		BloggerID: blogger.ID,

@@ -12,6 +12,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/kctjohnson/mid-blog/internal/config"
+	"github.com/kctjohnson/mid-blog/internal/content"
 	"github.com/kctjohnson/mid-blog/internal/db"
 	"github.com/kctjohnson/mid-blog/internal/db/repos"
 	"github.com/kctjohnson/mid-blog/internal/templates"
@@ -23,14 +24,14 @@ type Application struct {
 	PostRepo    *repos.PostRepository
 	UserRepo    *repos.UserRepository
 
-	BloggerAI      *chatgpt.Client
+	ContentCreator *content.ContentCreator
 	SessionManager *scs.SessionManager
 }
 
 func main() {
 	cfg := config.New(".env")
 
-	client, err := chatgpt.NewClient(cfg.OpenAIKey)
+	gptClient, err := chatgpt.NewClient(cfg.OpenAIKey)
 	if err != nil {
 		panic(err)
 	}
@@ -54,7 +55,7 @@ func main() {
 		CommentRepo:    commentRepo,
 		PostRepo:       postRepo,
 		UserRepo:       userRepo,
-		BloggerAI:      client,
+		ContentCreator: content.NewContentCreator(gptClient),
 		SessionManager: sessionManager,
 	}
 
