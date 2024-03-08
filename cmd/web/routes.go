@@ -463,8 +463,145 @@ func (app Application) AdminBlogger(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	posts, err := app.BloggerRepo.Posts(blogger.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	for i := range posts {
+		posts[i].Blogger = blogger
+	}
+
 	userData := app.SessionManager.Get(r.Context(), "user_data")
-	admin.Blogger(*userData.(UserInfo).User, *blogger).Render(r.Context(), w)
+	admin.Blogger(*userData.(UserInfo).User, *blogger, posts).Render(r.Context(), w)
+}
+
+func (app Application) CreatePost(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	bloggerIDStr := r.FormValue("blogger_id")
+	title := r.FormValue("title")
+	content := r.FormValue("content")
+
+	bloggerID, err := strconv.Atoi(bloggerIDStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	blogger, err := app.BloggerRepo.FindByID(bloggerID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	post, err := app.PostRepo.Insert(repos.PostInsertParameters{
+		BloggerID: bloggerID,
+		Title:     title,
+		Content:   content,
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	post.Blogger = blogger
+
+	public.PostCard(*post).Render(r.Context(), w)
+}
+
+func (app Application) GeneratePostForm(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		http.Error(w, "id is required", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	blogger, err := app.BloggerRepo.FindByID(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	admin.GeneratePostForm(*blogger).Render(r.Context(), w)
+}
+
+func (app Application) GeneratePostTitle(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	if idStr == "" {
+		http.Error(w, "id is required", http.StatusBadRequest)
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = r.ParseForm()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	titleSpiceStr := r.FormValue("title-spice")
+	titleSpice, err := strconv.ParseFloat(titleSpiceStr, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	fmt.Printf("%f\n", titleSpice)
+
+	blogger, err := app.BloggerRepo.FindByID(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	title, err := app.ContentCreator.GenerateTitle(titleSpice, blogger.Bio)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	admin.PostTitleInput(title).Render(r.Context(), w)
+}
+
+func (app Application) GeneratePostContent(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	title := r.FormValue("title")
+
+	contentSpiceStr := r.FormValue("content-spice")
+	contentSpice, err := strconv.ParseFloat(contentSpiceStr, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	content, err := app.ContentCreator.GeneratePost(contentSpice, title)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	admin.PostContentTextArea(content).Render(r.Context(), w)
 }
 
 func (app Application) DeleteBlogger(w http.ResponseWriter, r *http.Request) {

@@ -3,6 +3,7 @@ package admin
 import "github.com/kctjohnson/mid-blog/internal/db/models"
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "strconv"
+import "github.com/kctjohnson/mid-blog/internal/templates/pages/public"
 
 templ Bloggers(user models.User, bloggers []models.Blogger) {
 	@components.Layout("Admin - Bloggers") {
@@ -46,17 +47,56 @@ templ Bloggers(user models.User, bloggers []models.Blogger) {
 	}
 }
 
-templ Blogger(user models.User, blogger models.Blogger) {
+templ PostTitleInput(title string) {
+	<input id="generated-title" class="input input-bordered" type="text" name="title" value={ title } required/>
+}
+
+templ PostContentTextArea(content string) {
+	<textarea id="generated-content" class="textarea textarea-bordered" name="content" required>{ content }</textarea>
+}
+
+templ GeneratePostForm(blogger models.Blogger) {
+	<div id="form-container" class="container w-full">
+		<form id="generate-form" hx-post="/api/posts" hx-target="#posts-div" hx-swap="afterbegin" class="flex flex-col p-4 gap-4 w-96 self-center">
+			<input type="range" name="title-spice" min="0" max="1.7" value="1" class="range" step="0.05"/>
+			<button class="btn" type="button" hx-indicator="#loading-title" hx-post={ "/admin/bloggers/" + strconv.Itoa(blogger.ID) + "/title" } hx-swap="outerHTML" hx-target="#generated-title">Generate Title</button>
+			@PostTitleInput("")
+			<p id="loading-title" class="htmx-indicator">Loading...</p>
+			<input type="range" name="content-spice" min="0" max="1.7" value="1" class="range" step="0.05"/>
+			<button class="btn" type="button" hx-indicator="#loading-content" hx-post={ "/admin/bloggers/" + strconv.Itoa(blogger.ID) + "/content" } hx-swap="outerHTML" hx-target="#generated-content" hx-value>Generate Content</button>
+			@PostContentTextArea("")
+			<p id="loading-content" class="htmx-indicator">Loading...</p>
+			<input type="hidden" name="blogger_id" value={ strconv.Itoa(blogger.ID) }/>
+			<button class="btn" type="submit">Submit</button>
+		</form>
+	</div>
+}
+
+templ InitialGeneratePost(blogger models.Blogger) {
+	<div id="form-container" class="container flex flex-col items-center gap-2">
+		<h1>Generate Post</h1>
+		<button class="btn" hx-post={ "/admin/bloggers/" + strconv.Itoa(blogger.ID) + "/post" } hx-swap="outerHTML" hx-target="#form-container">Begin</button>
+	</div>
+}
+
+templ Blogger(user models.User, blogger models.Blogger, bloggersPosts []models.Post) {
 	@components.Layout("Admin - Blogger") {
 		@components.AdminNavbar(user)
-		<div class="p-8">
-			<p>{ strconv.Itoa(blogger.ID) }</p>
-			<p>{ blogger.Email }</p>
-			<p>{ blogger.FirstName }</p>
-			<p>{ blogger.LastName }</p>
-			<p>{ strconv.Itoa(blogger.Age) }</p>
-			<p>{ string(blogger.Gender) }</p>
-			<p>{ blogger.Bio }</p>
+		<div class="container flex flex-col items-center">
+			<div class="prose pt-8">
+				<div class="flex justify-center items-center p-2">
+					@components.AvatarIcon(64, 64, blogger.Avatar)
+					<h1 class="ml-4" style="margin-bottom:0">{ blogger.FirstName } { blogger.LastName }</h1>
+				</div>
+				<p class="text-center">{ blogger.Bio }</p>
+			</div>
+			<div class="divider py-8"></div>
+			@InitialGeneratePost(blogger)
+			<div class="divider py-8"></div>
+			<div class="prose">
+				<h1>Posts</h1>
+			</div>
+			@public.Posts(bloggersPosts)
 		</div>
 	}
 }

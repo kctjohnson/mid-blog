@@ -87,6 +87,7 @@ func (app Application) StartServer() error {
 	})
 
 	r.Route("/api", func(r chi.Router) {
+		r.Post("/posts", app.protectedRoute(app.CreatePost))
 		r.Post("/posts/comment", app.protectedRoute(app.Comment))
 		r.Post("/posts/{id}/like", app.protectedRoute(app.LikePost))
 		r.Post("/posts/{id}/dislike", app.protectedRoute(app.DislikePost))
@@ -106,6 +107,10 @@ func (app Application) StartServer() error {
 		r.Delete("/posts/{id}", app.protectedRoute(app.DeletePost))
 		r.Delete("/bloggers/{id}", app.protectedRoute(app.DeleteBlogger))
 		r.Delete("/users/{id}", app.protectedRoute(app.DeleteUser))
+
+		r.Post("/bloggers/{id}/post", app.protectedRoute(app.GeneratePostForm))
+		r.Post("/bloggers/{id}/title", app.protectedRoute(app.GeneratePostTitle))
+		r.Post("/bloggers/{id}/content", app.protectedRoute(app.GeneratePostContent))
 
 		r.Get("/initializebloggers", app.protectedRoute(app.InitializeBloggers))
 		r.Post("/createpostrand", app.protectedRoute(app.CreatePostRandom))
