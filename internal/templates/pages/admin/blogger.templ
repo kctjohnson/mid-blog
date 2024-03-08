@@ -3,7 +3,6 @@ package admin
 import "github.com/kctjohnson/mid-blog/internal/db/models"
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "strconv"
-import "github.com/kctjohnson/mid-blog/internal/templates/pages/public"
 
 templ Bloggers(user models.User, bloggers []models.Blogger) {
 	@components.Layout("Admin - Bloggers") {
@@ -56,33 +55,41 @@ templ PostContentTextArea(content string) {
 }
 
 templ GeneratePostForm(blogger models.Blogger) {
-	<div id="form-container" class="container w-full">
-		<form id="generate-form" hx-post="/api/posts" hx-target="#posts-div" hx-swap="afterbegin" class="flex flex-col p-4 gap-4 w-96 self-center">
-			<input type="range" name="title-spice" min="0" max="1.7" value="1" class="range" step="0.05"/>
-			<button class="btn" type="button" hx-indicator="#loading-title" hx-post={ "/admin/bloggers/" + strconv.Itoa(blogger.ID) + "/title" } hx-swap="outerHTML" hx-target="#generated-title">Generate Title</button>
-			@PostTitleInput("")
-			<p id="loading-title" class="htmx-indicator">Loading...</p>
-			<input type="range" name="content-spice" min="0" max="1.7" value="1" class="range" step="0.05"/>
-			<button class="btn" type="button" hx-indicator="#loading-content" hx-post={ "/admin/bloggers/" + strconv.Itoa(blogger.ID) + "/content" } hx-swap="outerHTML" hx-target="#generated-content" hx-value>Generate Content</button>
-			@PostContentTextArea("")
-			<p id="loading-content" class="htmx-indicator">Loading...</p>
-			<input type="hidden" name="blogger_id" value={ strconv.Itoa(blogger.ID) }/>
-			<button class="btn" type="submit">Submit</button>
-		</form>
+	<div id="form-container" class="container flex flex-col items-center gap-2">
+		<div class="card w-full" style="max-width:40rem">
+			<div class="card-body">
+				<form id="generate-form" hx-post="/api/posts" hx-target="#posts-div" hx-swap="afterbegin" class="flex flex-col p-4 gap-4 w-full">
+					<input type="range" name="title-spice" min="0" max="1.7" value="1" class="range" step="0.05"/>
+					<button class="btn" type="button" hx-indicator="#loading-title" hx-post={ "/admin/bloggers/" + strconv.Itoa(blogger.ID) + "/title" } hx-swap="outerHTML" hx-target="#generated-title">Generate Title</button>
+					@PostTitleInput("")
+					<p id="loading-title" class="htmx-indicator">Loading...</p>
+					<input type="range" name="content-spice" min="0" max="1.7" value="1" class="range" step="0.05"/>
+					<button class="btn" type="button" hx-indicator="#loading-content" hx-post={ "/admin/bloggers/" + strconv.Itoa(blogger.ID) + "/content" } hx-swap="outerHTML" hx-target="#generated-content" hx-value>Generate Content</button>
+					@PostContentTextArea("")
+					<p id="loading-content" class="htmx-indicator">Loading...</p>
+					<input type="hidden" name="blogger_id" value={ strconv.Itoa(blogger.ID) }/>
+					<button class="btn" type="submit">Submit</button>
+				</form>
+			</div>
+		</div>
 	</div>
 }
 
 templ InitialGeneratePost(blogger models.Blogger) {
 	<div id="form-container" class="container flex flex-col items-center gap-2">
-		<h1>Generate Post</h1>
-		<button class="btn" hx-post={ "/admin/bloggers/" + strconv.Itoa(blogger.ID) + "/post" } hx-swap="outerHTML" hx-target="#form-container">Begin</button>
+		<div class="card w-96 ">
+			<div class="card-body">
+				<h1 class="card-title">Generate Post</h1>
+				<button class="btn" hx-post={ "/admin/bloggers/" + strconv.Itoa(blogger.ID) + "/post" } hx-swap="outerHTML" hx-target="#form-container">Begin</button>
+			</div>
+		</div>
 	</div>
 }
 
 templ Blogger(user models.User, blogger models.Blogger, bloggersPosts []models.Post) {
 	@components.Layout("Admin - Blogger") {
 		@components.AdminNavbar(user)
-		<div class="container flex flex-col items-center">
+		<div class="w-full flex flex-col items-center">
 			<div class="prose pt-8">
 				<div class="flex justify-center items-center p-2">
 					@components.AvatarIcon(64, 64, blogger.Avatar)
@@ -96,7 +103,47 @@ templ Blogger(user models.User, blogger models.Blogger, bloggersPosts []models.P
 			<div class="prose">
 				<h1>Posts</h1>
 			</div>
-			@public.Posts(bloggersPosts)
+			@PostList(bloggersPosts)
 		</div>
 	}
+}
+
+templ PostList(posts []models.Post) {
+	<div class="flex flex-col items-center sm:block pt-8 pb-4 px-10 sm:px-40">
+		<div id="posts-div">
+			for _, post := range posts {
+				@PostCard(post)
+			}
+		</div>
+	</div>
+}
+
+script AuthorLink(authorID int) {
+	event.preventDefault();
+	event.stopPropagation();
+	window.location.href = "/blogger/" + authorID;
+}
+
+templ PostCard(post models.Post) {
+	<div class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow w-full flex flex-col items-center sm:items-start p-4 overflow-hidden relative">
+		<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="absolute inset-0 z-[0]"></a>
+		<p onclick={ AuthorLink(post.BloggerID) } class="gap-2 z-[1] flex flex-row items-center m-1 cursor-pointer transition-all rounded-lg hover:drop-shadow-lg hover:underline child ml-2 text-sm capitalize">
+			@components.AvatarIcon(32, 32, post.Blogger.Avatar)
+			{ post.Blogger.FirstName } { post.Blogger.LastName }
+		</p>
+		<p class="font-bold m-1 text-center sm:text-left">{ post.Title }</p>
+		<p class="m-1 text-gray-400 text-center sm:text-center" style="max-width:65ch">{ post.Content[0:65] + "..." }</p>
+		<div class="flex">
+			<p class="text-xs m-1">{ post.CreateDate.Format("Jan 02 2006, 3:04PM") }</p>
+			<p
+				class={
+					"text-xs m-1",
+					templ.KV("text-green-500", (post.Likes-post.Dislikes) > 0),
+					templ.KV("text-red-500", (post.Likes-post.Dislikes) < 0),
+				}
+			>
+				{ strconv.Itoa(post.Likes - post.Dislikes) }
+			</p>
+		</div>
+	</div>
 }
