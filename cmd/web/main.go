@@ -58,7 +58,9 @@ func main() {
 		SessionManager: sessionManager,
 	}
 
-	app.StartServer()
+	if err := app.StartServer(); err != nil {
+		panic(err)
+	}
 }
 
 func (app Application) StartServer() error {
