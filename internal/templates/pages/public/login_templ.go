@@ -35,7 +35,7 @@ func Login() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"prose flex flex-col p-8\"><h1>Login</h1><form class=\"flex flex-col\" action=\"/auth/login\" method=\"post\"><input name=\"username\" type=\"text\" class=\"input input-bordered gap-2 mb-3\" placeholder=\"Username\"> <input name=\"password\" type=\"password\" class=\"input input-bordered gap-2 mb-3\" placeholder=\"Password\" value=\"\"> <button class=\"btn\" type=\"submit\">Login</button><div class=\"divider\">Don't have an account?</div>")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -43,7 +43,7 @@ func Login() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</form></div>")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -6,18 +6,24 @@ templ Layout(title string) {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-			<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self' ws://localhost:*; img-src 'self' data:*;"/>
+			<!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self' ws://localhost:*; img-src 'self' data:*;"/> -->
 			<title>{ title }</title>
-			<link rel="dns-prefetch" href="//fonts.googleapis.com"/>
-			<link rel="dns-prefetch" href="//fonts.gstatic.com"/>
-			<link rel="preconnect" href="//fonts.googleapis.com" crossorigin/>
-			<link rel="preconnect" href="//fonts.gstatic.com" crossorigin/>
-			<link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/>
-			<link href="/static/styles.css" rel="stylesheet"/>
+			<!-- <link rel="dns-prefetch" href="//fonts.googleapis.com"/> -->
+			<!-- <link rel="dns-prefetch" href="//fonts.gstatic.com"/> -->
+			<!-- <link rel="preconnect" href="//fonts.googleapis.com" crossorigin/> -->
+			<!-- <link rel="preconnect" href="//fonts.gstatic.com" crossorigin/> -->
+			<!-- <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet"/> -->
+			<!-- <link href="/static/styles.css" rel="stylesheet"/> -->
+			<!--TODO: Replace CDN things with static files -->
+			<link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.3/dist/full.min.css" rel="stylesheet" type="text/css"/>
+			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+			<script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+			<script src="https://cdn.tailwindcss.com"></script>
+			<link rel="stylesheet" href="https://unpkg.com/@tailwindcss/typography@0.1.2/dist/typography.min.css"/>
 		</head>
 		<body>
 			{ children... }
-			<script src="/static/scripts.js"></script>
+			<!-- <script src="/static/scripts.js"></script> -->
 		</body>
 	</html>
 }

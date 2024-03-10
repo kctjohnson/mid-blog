@@ -23,7 +23,7 @@ func SkeletonPostCard() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col gap-4 w-72\"><div class=\"skeleton h-24 w-full\"></div><div class=\"skeleton h-4 w-28\"></div><div class=\"skeleton h-4 w-full\"></div></div>")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

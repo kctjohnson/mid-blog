@@ -27,7 +27,7 @@ func RandomPostLink(postID int, postTitle string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<a href=\"")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 1)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -36,7 +36,7 @@ func RandomPostLink(postID int, postTitle string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 2)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -49,7 +49,7 @@ func RandomPostLink(postID int, postTitle string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a>")
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 3)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -83,7 +83,7 @@ func Index(user models.User) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"prose p-8\"><h1>Admin Panel</h1><p>Manage all of the things here</p></div><div class=\"pl-8\"><button class=\"btn\" hx-post=\"/admin/createpostrand\" hx-target=\"#new-post-link\" hx-swap=\"outerHTML\" hx-indicator=\"#loading-post\">Create Random Post</button><p id=\"loading-post\" class=\"htmx-indicator\">Loading...</p><a id=\"new-post-link\" class=\"hidden\">Waiting for post to be generated...</a></div><div class=\"pl-8\"><button class=\"btn\" hx-post=\"/admin/createrandomblogger\" hx-target=\"#new-blogger-link\" hx-swap=\"outerHTML\" hx-indicator=\"#loading-blogger\">Create Random Blogger</button><p id=\"loading-blogger\" class=\"htmx-indicator\">Loading...</p><a id=\"new-blogger-link\" class=\"hidden\">Waiting for blogger to be generated...</a></div>")
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 4)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
