@@ -36,5 +36,6 @@ func loadConfig() Config {
 		AutoMigrate:       GetBool("AUTO_MIGRATE", false),
 		OpenAIKey:         GetString("OPENAI_KEY", ""),
 	}
+
 	return cfg
 }
