@@ -6,7 +6,7 @@
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "source": [
     "./assets/scripts.js",
-    "./assets/styles.scss"
+    "./assets/styles.css"
   ],
   "targets": {
     "default": {
@@ -20,16 +20,19 @@
     "build": "parcel build"
   },
   "dependencies": {
-    "@tailwindcss/typography": "latest",
-    "htmx.org": "latest",
-    "hyperscript.org": "latest",
-    "tailwindcss": "latest"
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/typography": "^0.5.20",
+    "htmx.org": "^2.0.11",
+    "hyperscript.org": "^0.9.94",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
-    "@parcel/transformer-sass": "latest",
-    "daisyui": "^4.7.2",
-    "parcel": "^2.12.0",
-    "postcss": "latest",
-    "prettier": "latest"
+    "daisyui": "^5.7.50",
+    "parcel": "^2.16.4",
+    "postcss": "^8.5.32",
+    "prettier": "^3.9.10"
+  },
+  "overrides": {
+    "postcss-selector-parser": "^6.1.5"
   }
 }

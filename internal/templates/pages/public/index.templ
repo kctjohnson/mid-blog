@@ -11,14 +11,14 @@ script AuthorLink(authorID int) {
 }
 
 templ PostCard(post models.Post) {
-	<div class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow w-full flex flex-col items-center sm:items-start p-4 overflow-hidden relative">
+	<div class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow-sm w-full flex flex-col items-center sm:items-start p-4 overflow-hidden relative">
 		<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="absolute inset-0 z-[0]"></a>
 		<p onclick={ AuthorLink(post.BloggerID) } class="gap-2 z-[1] flex flex-row items-center m-1 cursor-pointer transition-all rounded-lg hover:drop-shadow-lg hover:underline child ml-2 text-sm capitalize">
 			@components.AvatarIcon(32, 32, post.Blogger.Avatar)
 			{ post.Blogger.FirstName } { post.Blogger.LastName }
 		</p>
 		<p class="font-bold m-1 text-center sm:text-left">{ post.Title }</p>
-		<p class="m-1 text-gray-400 text-center sm:text-center" style="max-width:65ch">{ post.Content[0:65] + "..." }</p>
+		<p class="m-1 text-gray-400 text-center sm:text-center" style="max-width:65ch">{ post.Content[0:65] +"..." }</p>
 		<div class="flex">
 			<p class="text-xs m-1">{ post.CreateDate.Format("Jan 02 2006, 3:04PM") }</p>
 			<p
@@ -35,7 +35,7 @@ templ PostCard(post models.Post) {
 }
 
 templ TrendingCard(post models.Post) {
-	<div class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow flex flex-col items-center py-4 overflow-hidden relative">
+	<div class="hover:bg-gray-50 transition-all rounded-lg hover:drop-shadow-sm flex flex-col items-center py-4 overflow-hidden relative">
 		<a href={ templ.SafeURL("/" + strconv.Itoa(post.ID)) } class="absolute inset-0 z-[0]"></a>
 		<p onclick={ AuthorLink(post.BloggerID) } class="gap-2 z-[1] flex flex-row items-center m-1 cursor-pointer transition-all rounded-lg hover:drop-shadow-lg hover:underline child ml-2 text-sm capitalize">
 			@components.AvatarIcon(32, 32, post.Blogger.Avatar)

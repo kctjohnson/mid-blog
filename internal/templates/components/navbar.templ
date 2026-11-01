@@ -14,10 +14,10 @@ templ AdminNavbar(user models.User) {
 				@NavLink("/auth/logout", "Logout")
 			</div>
 			<div class="block sm:hidden dropdown dropdown-end dropdown-hover">
-				<div tabindex="0" role="button" class="btn btn-ghost rounded-btn">
+				<div tabindex="0" role="button" class="btn btn-ghost rounded-field">
 					@HamburgerIcon(32, 32)
 				</div>
-				<ul tabindex="0" class="menu dropdown-content overflow-visible z-[2] p-2 shadow bg-yellow-500 w-52 mt-4">
+				<ul tabindex="0" class="menu dropdown-content overflow-visible z-[2] p-2 shadow-sm bg-yellow-500 w-52 mt-4">
 					<li>
 						@NavLink("/", "Blog")
 					</li>
@@ -53,10 +53,10 @@ templ Navbar(user *models.User) {
 				}
 			</div>
 			<div class="block sm:hidden dropdown dropdown-end dropdown-hover">
-				<div tabindex="0" role="button" class="btn btn-ghost rounded-btn">
+				<div tabindex="0" role="button" class="btn btn-ghost rounded-field">
 					@HamburgerIcon(32, 32)
 				</div>
-				<ul tabindex="0" class="menu dropdown-content z-[1] p-2 shadow bg-yellow-500 w-52 mt-4">
+				<ul tabindex="0" class="menu dropdown-content z-[1] p-2 shadow-sm bg-yellow-500 w-52 mt-4">
 					if user != nil {
 						<li>
 							@NavLink("/admin", "Admin Panel")
@@ -91,10 +91,10 @@ templ IndexNavbar(user *models.User) {
 			}
 		</div>
 		<div class="block sm:hidden dropdown dropdown-end dropdown-hover">
-			<div tabindex="0" role="button" class="btn btn-ghost rounded-btn">
+			<div tabindex="0" role="button" class="btn btn-ghost rounded-field">
 				@HamburgerIcon(32, 32)
 			</div>
-			<ul tabindex="0" class="menu dropdown-content z-[1] p-2 shadow bg-yellow-500 w-52 mt-4">
+			<ul tabindex="0" class="menu dropdown-content z-[1] p-2 shadow-sm bg-yellow-500 w-52 mt-4">
 				if user != nil {
 					<li>
 						@NavLink("/admin", "Admin Panel")

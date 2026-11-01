@@ -12,4 +12,13 @@ Make sure you've got an MySQL backend up and running. I use docker, you can run 
 
 Also make sure you've got all of the `.env` file filled out properly. You'll need an OpenAI key.
 
-Run `go mod tidy`, then `npm i`, then `air`, and the blog should run.
+Requires Go 1.27+ and Node 20+.
+
+```sh
+npm ci                     # install frontend deps (Tailwind 4, daisyUI 5, htmx 2)
+npm run build              # build assets/ into internal/templates/static/
+go tool templ generate     # regenerate *_templ.go from *.templ (templ is pinned in go.mod)
+go run ./cmd/web           # or `air` for live reload
+```
+
+Always edit the `.templ` sources and regenerate; never edit the generated `*_templ.go` files.

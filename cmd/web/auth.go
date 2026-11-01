@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -26,7 +27,7 @@ func (app Application) Register(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 
 	// Generate the hash and add the user to the users table
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.MinCost)
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s", err.Error())))
 		return
@@ -39,6 +40,12 @@ func (app Application) Register(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf("Error: %s", err.Error())))
+		return
+	}
+
+	// Issue a fresh session token on privilege change to prevent session fixation
+	if err := app.SessionManager.RenewToken(r.Context()); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -60,10 +67,11 @@ func (app Application) Login(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue("password")
 
 	// First, make sure that the user exists
+	// Use the same message for unknown users and bad passwords so usernames can't be enumerated
 	user, err := app.UserRepo.FindByUsername(username)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			w.Write([]byte(fmt.Sprintf("User \"%s\" Doesn't Exist", username)))
+		if errors.Is(err, sql.ErrNoRows) {
+			w.Write([]byte("Invalid username or password"))
 			return
 		}
 		w.Write([]byte(fmt.Sprintf("Error: %s", err.Error())))
@@ -73,7 +81,13 @@ func (app Application) Login(w http.ResponseWriter, r *http.Request) {
 	// Compare the entered password to the hash password using bcrypt
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		w.Write([]byte(fmt.Sprintf("Error: %s", err.Error())))
+		w.Write([]byte("Invalid username or password"))
+		return
+	}
+
+	// Issue a fresh session token on privilege change to prevent session fixation
+	if err := app.SessionManager.RenewToken(r.Context()); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 

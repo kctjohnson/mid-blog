@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
+	"log"
+	"math/rand/v2"
 	"net/http"
 	"strconv"
 	"sync"
@@ -113,7 +114,6 @@ func (app Application) Comment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	postIDStr := r.FormValue("post_id")
-	userIDStr := r.FormValue("user_id")
 	content := r.FormValue("content")
 
 	postID, err := strconv.Atoi(postIDStr)
@@ -122,11 +122,13 @@ func (app Application) Comment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID, err := strconv.Atoi(userIDStr)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+	// Always attribute the comment to the logged-in user, never to a client-supplied ID
+	userData, ok := app.SessionManager.Get(r.Context(), "user_data").(UserInfo)
+	if !ok || userData.User == nil {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
 		return
 	}
+	userID := userData.User.ID
 
 	_, err = app.CommentRepo.Insert(repos.CommentInsertParameters{
 		UserID:  userID,
@@ -700,30 +702,31 @@ func (app Application) InitializeBloggers(w http.ResponseWriter, r *http.Request
 	for i := 0; i < 5; i++ {
 		wg.Add(1)
 		go func() {
+			defer wg.Done()
 			firstName, err := app.ContentCreator.GenerateFirstName(1.0)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				log.Printf("initialize bloggers: %v", err)
 				return
 			}
 
 			lastName, err := app.ContentCreator.GenerateLastName(1.0)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				log.Printf("initialize bloggers: %v", err)
 				return
 			}
 
 			emailName, err := app.ContentCreator.GenerateEmail(1.0)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				log.Printf("initialize bloggers: %v", err)
 				return
 			}
 
 			email := fmt.Sprintf("%s@mid.com", emailName)
 
-			age := rand.Int()%45 + 15
+			age := rand.IntN(45) + 15
 
 			var gender models.Gender
-			randGenderInt := rand.Intn(2)
+			randGenderInt := rand.IntN(2)
 			if randGenderInt == 0 {
 				gender = models.Male
 			} else {
@@ -732,7 +735,7 @@ func (app Application) InitializeBloggers(w http.ResponseWriter, r *http.Request
 
 			bio, err := app.ContentCreator.GenerateBio(1.5, firstName, lastName)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				log.Printf("initialize bloggers: %v", err)
 				return
 			}
 
@@ -743,13 +746,12 @@ func (app Application) InitializeBloggers(w http.ResponseWriter, r *http.Request
 				Age:       age,
 				Gender:    gender,
 				Bio:       bio,
-				Avatar:    rand.Intn(9) + 1,
+				Avatar:    rand.IntN(9) + 1,
 			})
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				log.Printf("initialize bloggers: %v", err)
 				return
 			}
-			wg.Done()
 		}()
 	}
 	wg.Wait()
@@ -758,6 +760,7 @@ func (app Application) InitializeBloggers(w http.ResponseWriter, r *http.Request
 	// Make 1 post per blogger
 	bloggers, err := app.BloggerRepo.All()
 	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -765,15 +768,16 @@ func (app Application) InitializeBloggers(w http.ResponseWriter, r *http.Request
 	for _, blogger := range bloggers {
 		wg.Add(1)
 		go func(b models.Blogger) {
-			title, err := app.ContentCreator.GenerateTitle(1.5, blogger.Bio)
+			defer wg.Done()
+			title, err := app.ContentCreator.GenerateTitle(1.5, b.Bio)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				log.Printf("initialize bloggers: %v", err)
 				return
 			}
 
 			content, err := app.ContentCreator.GeneratePost(1.0, title)
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				log.Printf("initialize bloggers: %v", err)
 				return
 			}
 
@@ -783,10 +787,9 @@ func (app Application) InitializeBloggers(w http.ResponseWriter, r *http.Request
 				Content:   content,
 			})
 			if err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+				log.Printf("initialize bloggers: %v", err)
 				return
 			}
-			wg.Done()
 		}(blogger)
 	}
 	wg.Wait()
@@ -816,10 +819,10 @@ func (app Application) CreateRandomBlogger(w http.ResponseWriter, r *http.Reques
 
 	email := fmt.Sprintf("%s@mid.com", emailName)
 
-	age := rand.Int()%45 + 15
+	age := rand.IntN(45) + 15
 
 	var gender models.Gender
-	randGenderInt := rand.Intn(2)
+	randGenderInt := rand.IntN(2)
 	if randGenderInt == 0 {
 		gender = models.Male
 	} else {
@@ -839,7 +842,7 @@ func (app Application) CreateRandomBlogger(w http.ResponseWriter, r *http.Reques
 		Age:       age,
 		Gender:    gender,
 		Bio:       bio,
-		Avatar:    rand.Intn(9) + 1,
+		Avatar:    rand.IntN(9) + 1,
 	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -857,8 +860,13 @@ func (app Application) CreatePostRandom(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	if len(bloggers) == 0 {
+		http.Error(w, "no bloggers exist yet", http.StatusBadRequest)
+		return
+	}
+
 	// Get a random blogger
-	blogger := bloggers[rand.Intn(len(bloggers))]
+	blogger := bloggers[rand.IntN(len(bloggers))]
 
 	// Get a random title
 	title, err := app.ContentCreator.GenerateTitle(1.5, blogger.Bio)

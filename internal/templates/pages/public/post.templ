@@ -3,6 +3,7 @@ package public
 import "github.com/kctjohnson/mid-blog/internal/db/models"
 import "github.com/kctjohnson/mid-blog/internal/templates/components"
 import "strconv"
+import "strings"
 
 css LockedContentDiv() {
 	mask-image: linear-gradient(to bottom, black 10%, transparent 80%);
@@ -75,10 +76,10 @@ templ PostStats(user *models.User, post models.Post) {
 	<div id="post-stats" class="flex flex-row justify-center items-center space-x-3">
 		if user != nil {
 			@PostRating(post)
-			<button hx-post={ "/api/posts/" + strconv.Itoa(post.ID) + "/like" } hx-target="#post-stats" hx-swap="outerHTML" class="w-4 h-4 hover:drop-shadow-md">
+			<button hx-post={"/api/posts/" + strconv.Itoa(post.ID) +"/like" } hx-target="#post-stats" hx-swap="outerHTML" class="w-4 h-4 hover:drop-shadow-md">
 				@components.LikeIcon(16, 16)
 			</button>
-			<button hx-post={ "/api/posts/" + strconv.Itoa(post.ID) + "/dislike" } hx-target="#post-stats" hx-swap="outerHTML" class="w-4 h-4 hover:drop-shadow-md">
+			<button hx-post={"/api/posts/" + strconv.Itoa(post.ID) +"/dislike" } hx-target="#post-stats" hx-swap="outerHTML" class="w-4 h-4 hover:drop-shadow-md">
 				@components.DislikeIcon(16, 16)
 			</button>
 		}
@@ -101,10 +102,10 @@ templ CommentStats(user *models.User, comment models.Comment) {
 	<div id="comment-stats" class="flex flex-row justify-center items-center space-x-3">
 		@CommentRating(comment)
 		if user != nil {
-			<button hx-post={ "/api/comments/" + strconv.Itoa(comment.ID) + "/like" } hx-target="#comment-stats" hx-swap="outerHTML" class="w-4 h-4 hover:drop-shadow-md">
+			<button hx-post={"/api/comments/" + strconv.Itoa(comment.ID) +"/like" } hx-target="#comment-stats" hx-swap="outerHTML" class="w-4 h-4 hover:drop-shadow-md">
 				@components.LikeIcon(16, 16)
 			</button>
-			<button hx-post={ "/api/comments/" + strconv.Itoa(comment.ID) + "/dislike" } hx-target="#comment-stats" hx-swap="outerHTML" class="w-4 h-4 hover:drop-shadow-md">
+			<button hx-post={"/api/comments/" + strconv.Itoa(comment.ID) +"/dislike" } hx-target="#comment-stats" hx-swap="outerHTML" class="w-4 h-4 hover:drop-shadow-md">
 				@components.DislikeIcon(16, 16)
 			</button>
 		}
@@ -130,8 +131,7 @@ templ CommentsSection(user *models.User, post models.Post, comments []models.Com
 		if user != nil {
 			<form id="comment-form" hx-post="/api/posts/comment" hx-target="#comments-section" hx-swap="outerHTML" class="w-full flex flex-col sm:items-center gap-4">
 				<input type="hidden" name="post_id" value={ strconv.Itoa(post.ID) }/>
-				<input type="hidden" name="user_id" value={ strconv.Itoa(user.ID) }/>
-				<textarea name="content" class="textarea textarea-bordered sm:min-w-96 p-4 mx-4" placeholder="Write a comment..."></textarea>
+				<textarea name="content" class="textarea sm:min-w-96 p-4 mx-4" placeholder="Write a comment..."></textarea>
 				<button type="submit" class="btn mx-4">Submit</button>
 			</form>
 		}

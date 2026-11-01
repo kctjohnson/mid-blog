@@ -32,8 +32,8 @@ templ Posts(user models.User, posts []models.Post) {
 						<td>{ strconv.Itoa(post.Dislikes) }</td>
 						<td>
 							<div class="dropdown dropdown-hover dropdown-bottom dropdown-end">
-								<div tabindex="0" role="button" class="w-6 h-6 hover:bg-gray-100 transition rounded m-1 text-center">...</div>
-								<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+								<div tabindex="0" role="button" class="w-6 h-6 hover:bg-gray-100 transition rounded-sm m-1 text-center">...</div>
+								<ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow-sm bg-base-100 rounded-box w-52">
 									<li>
 										<a href={ templ.SafeURL("/admin/posts/" + strconv.Itoa(post.ID)) }>View</a>
 									</li>
