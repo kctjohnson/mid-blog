@@ -6,7 +6,28 @@ Built using [Go](https://go.dev/), [Templ](https://github.com/a-h/templ), [Tailw
 
 Large amounts of text have been generated using [OpenAI's GPT-3](https://openai.com/gpt-3/).
 
-## Running
+## Running with Docker
+
+**Production** (app + MySQL; copy `.env.example` to `.env` and fill in the passwords first):
+
+```sh
+docker compose up -d --build        # serves on :4231 (override with APP_PORT)
+```
+
+Migrations run automatically on startup. `OPENAI_KEY` is optional; without it the site runs
+but the AI generation endpoints in the admin panel will fail.
+
+**Development** (live reload via air, Parcel asset watcher, MySQL exposed on localhost:3306; no `.env` needed):
+
+```sh
+docker compose -f compose.dev.yaml up --build
+```
+
+On macOS, if the repo lives in an iCloud-synced folder (e.g. `~/Documents`) with "Optimize Mac Storage"
+on, evicted files show up as `Input/output error` inside containers. Keep the folder downloaded
+(Finder → right-click → Keep Downloaded) or move the repo out of iCloud.
+
+## Running locally
 
 Make sure you've got an MySQL backend up and running. I use docker, you can run it however you like.
 

@@ -1,0 +1,13 @@
+.git
+.env
+.env.*
+!.env.example
+node_modules
+.parcel-cache
+tmp
+dist
+deploy
+*.md
+Dockerfile
+compose*.yaml
+**/.DS_Store
