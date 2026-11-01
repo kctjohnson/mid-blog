@@ -7,3 +7,7 @@ dist/
 deploy/
 Makefile
 .DS_Store
+data/
+*.db
+*.db-shm
+*.db-wal

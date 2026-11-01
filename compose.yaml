@@ -1,6 +1,6 @@
-# Production stack: app + MySQL.
+# Production: single container, SQLite database in a named volume.
 #   docker compose up -d --build
-# Configure via a .env file next to this one (see .env.example).
+# Optional settings go in a .env file next to this one (see .env.example).
 
 name: mid-blog
 
@@ -14,31 +14,12 @@ services:
     ports:
       - "${APP_PORT:-4231}:4231"
     environment:
-      DSN: "${MYSQL_USER:?set MYSQL_USER}:${MYSQL_PASSWORD:?set MYSQL_PASSWORD}@tcp(db:3306)/${MYSQL_DATABASE:-midblog}?parseTime=true"
-      AUTO_MIGRATE: "true"
+      DATABASE_PATH: /data/midblog.db
       # The app refuses to start with an empty key; a placeholder lets the site run,
       # only the AI generation endpoints will fail without a real key.
       OPENAI_KEY: "${OPENAI_KEY:-not-configured}"
-    depends_on:
-      db:
-        condition: service_healthy
-
-  db:
-    image: mysql:8.4
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: "${MYSQL_DATABASE:-midblog}"
-      MYSQL_USER: "${MYSQL_USER:?set MYSQL_USER}"
-      MYSQL_PASSWORD: "${MYSQL_PASSWORD:?set MYSQL_PASSWORD}"
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:?set MYSQL_ROOT_PASSWORD}"
     volumes:
-      - db-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
-      interval: 5s
-      timeout: 5s
-      retries: 20
-      start_period: 30s
+      - app-data:/data
 
 volumes:
-  db-data:
+  app-data:

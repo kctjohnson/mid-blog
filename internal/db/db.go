@@ -2,57 +2,69 @@ package db
 
 import (
 	"errors"
-	"log"
-	"time"
-
-	"github.com/kctjohnson/mid-blog/assets"
+	"fmt"
+	"net/url"
+	"os"
+	"path/filepath"
 
 	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/sqlite"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/jmoiron/sqlx"
 
-	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/golang-migrate/migrate/v4/database/mysql"
+	_ "modernc.org/sqlite"
+
+	"github.com/kctjohnson/mid-blog/assets"
 )
 
 type DB struct {
 	*sqlx.DB
 }
 
-func New(dsn string, automigrate bool) (*DB, error) {
-	db, err := sqlx.Connect("mysql", dsn)
-	if err != nil {
-		log.Fatal(err)
+// New opens (creating if needed) the SQLite database file at path.
+func New(path string, automigrate bool) (*DB, error) {
+	if dir := filepath.Dir(path); dir != "." {
+		if err := os.MkdirAll(dir, 0o755); err != nil {
+			return nil, fmt.Errorf("create database directory: %w", err)
+		}
 	}
 
-	db.SetMaxOpenConns(25)
-	db.SetMaxIdleConns(25)
-	db.SetConnMaxIdleTime(5 * time.Minute)
-	db.SetConnMaxLifetime(2 * time.Hour)
+	// Pragmas are applied to every pooled connection:
+	//   foreign_keys - SQLite leaves FK enforcement (and ON DELETE CASCADE) off by default
+	//   journal_mode - WAL lets readers proceed while a write is in progress
+	//   busy_timeout - wait for locks instead of failing immediately on concurrent writes
+	q := url.Values{}
+	q.Add("_pragma", "foreign_keys(1)")
+	q.Add("_pragma", "journal_mode(WAL)")
+	q.Add("_pragma", "busy_timeout(5000)")
+	q.Add("_pragma", "synchronous(NORMAL)")
+	dsn := "file:" + path + "?" + q.Encode()
+
+	db, err := sqlx.Connect("sqlite", dsn)
+	if err != nil {
+		return nil, fmt.Errorf("open sqlite database %q: %w", path, err)
+	}
 
 	if automigrate {
-		iofsDriver, err := iofs.New(assets.Migrations, "migrations")
+		driver, err := sqlite.WithInstance(db.DB, &sqlite.Config{})
 		if err != nil {
 			return nil, err
 		}
 
-		migrator, err := migrate.NewWithSourceInstance("iofs", iofsDriver, "mysql://"+dsn)
+		source, err := iofs.New(assets.Migrations, "migrations")
 		if err != nil {
 			return nil, err
 		}
 
-		err = migrator.Up()
-		switch {
-		case errors.Is(err, migrate.ErrNoChange):
-			break
-		case err != nil:
+		migrator, err := migrate.NewWithInstance("iofs", source, "sqlite", driver)
+		if err != nil {
 			return nil, err
+		}
+
+		if err := migrator.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+			return nil, fmt.Errorf("run migrations: %w", err)
 		}
 	}
 
 	return &DB{db}, nil
-}
-
-func (db *DB) RunMigrations() error {
-	return nil
 }

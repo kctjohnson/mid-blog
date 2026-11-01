@@ -40,7 +40,7 @@ func main() {
 	sessionManager := scs.New()
 	sessionManager.Lifetime = 24 * time.Hour
 
-	db, err := db.New(cfg.DSN, cfg.AutoMigrate)
+	db, err := db.New(cfg.DatabasePath, cfg.AutoMigrate)
 	if err != nil {
 		panic(err)
 	}

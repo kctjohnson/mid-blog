@@ -11,3 +11,4 @@ deploy
 Dockerfile
 compose*.yaml
 **/.DS_Store
+data

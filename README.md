@@ -8,7 +8,10 @@ Large amounts of text have been generated using [OpenAI's GPT-3](https://openai.
 
 ## Running with Docker
 
-**Production** (app + MySQL; copy `.env.example` to `.env` and fill in the passwords first):
+Data is stored in SQLite (pure Go driver, no CGO). In Docker the database lives at `/data/midblog.db`;
+mount a persistent volume at `/data` or it is lost when the container is replaced.
+
+**Production** (single container; no `.env` required):
 
 ```sh
 docker compose up -d --build        # serves on :4231 (override with APP_PORT)
@@ -17,7 +20,7 @@ docker compose up -d --build        # serves on :4231 (override with APP_PORT)
 Migrations run automatically on startup. `OPENAI_KEY` is optional; without it the site runs
 but the AI generation endpoints in the admin panel will fail.
 
-**Development** (live reload via air, Parcel asset watcher, MySQL exposed on localhost:3306; no `.env` needed):
+**Development** (live reload via air + Parcel asset watcher; no `.env` needed):
 
 ```sh
 docker compose -f compose.dev.yaml up --build
@@ -29,9 +32,8 @@ on, evicted files show up as `Input/output error` inside containers. Keep the fo
 
 ## Running locally
 
-Make sure you've got an MySQL backend up and running. I use docker, you can run it however you like.
-
-Also make sure you've got all of the `.env` file filled out properly. You'll need an OpenAI key.
+The SQLite database is created at `data/midblog.db` on first run (override with `DATABASE_PATH`).
+Set `OPENAI_KEY` in `.env` to enable AI generation.
 
 Requires Go 1.27+ and Node 20+.
 
