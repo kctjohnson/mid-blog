@@ -1,0 +1,18 @@
+# air config used by the dev container (compose.dev.yaml).
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  cmd = "go tool templ generate && go build -o ./tmp/mid-blog ./cmd/web"
+  entrypoint = ["./tmp/mid-blog"]
+  include_ext = ["go", "templ", "css", "js"]
+  exclude_dir = ["node_modules", "tmp", ".parcel-cache", "assets"]
+  exclude_regex = ["_templ\\.go$", "\\.map$"]
+  # Polling is more reliable than inotify across Docker Desktop bind mounts
+  poll = true
+  poll_interval = 500
+  delay = 200
+  kill_delay = "1s"
+
+[log]
+  time = true

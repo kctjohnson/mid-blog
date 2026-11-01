@@ -1,0 +1,57 @@
+# Development stack: live-reloading Go server, Parcel asset watcher, MySQL on localhost:3306.
+#   docker compose -f compose.dev.yaml up --build
+# Edit .templ / .go / assets on the host; air regenerates templ and restarts the server.
+
+name: mid-blog-dev
+
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "4231:4231"
+    environment:
+      DSN: "${MYSQL_USER:-midblog}:${MYSQL_PASSWORD:-midblog}@tcp(db:3306)/${MYSQL_DATABASE:-midblog}?parseTime=true"
+      AUTO_MIGRATE: "true"
+      OPENAI_KEY: "${OPENAI_KEY:-not-configured}"
+    volumes:
+      - .:/src
+      - go-mod:/go/pkg/mod
+      - go-build:/root/.cache/go-build
+    depends_on:
+      db:
+        condition: service_healthy
+
+  assets:
+    image: node:24-slim
+    working_dir: /src
+    command: sh -c "npm ci --no-audit --no-fund && npx parcel watch --no-hmr --cache-dir /tmp/parcel-cache"
+    volumes:
+      - .:/src
+      # Keep Linux node_modules separate from the host's macOS ones
+      - node-modules:/src/node_modules
+
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: "${MYSQL_DATABASE:-midblog}"
+      MYSQL_USER: "${MYSQL_USER:-midblog}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD:-midblog}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-root}"
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data-dev:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+volumes:
+  db-data-dev:
+  go-mod:
+  go-build:
+  node-modules:
