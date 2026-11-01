@@ -1,5 +1,5 @@
 # Development stack: live-reloading Go server, Parcel asset watcher, MySQL on localhost:3306.
-#   docker compose -f compose.dev.yaml up --build
+#   docker compose -f docker-compose.dev.yaml up --build
 # Edit .templ / .go / assets on the host; air regenerates templ and restarts the server.
 
 name: mid-blog-dev

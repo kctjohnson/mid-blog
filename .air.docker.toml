@@ -1,4 +1,4 @@
-# air config used by the dev container (compose.dev.yaml).
+# air config used by the dev container (docker-compose.dev.yaml).
 root = "."
 tmp_dir = "tmp"
 

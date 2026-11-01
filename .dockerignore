@@ -9,5 +9,5 @@ dist
 deploy
 *.md
 Dockerfile
-compose*.yaml
+docker-compose*.yaml
 **/.DS_Store

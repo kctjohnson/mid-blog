@@ -20,7 +20,7 @@ but the AI generation endpoints in the admin panel will fail.
 **Development** (live reload via air, Parcel asset watcher, MySQL exposed on localhost:3306; no `.env` needed):
 
 ```sh
-docker compose -f compose.dev.yaml up --build
+docker compose -f docker-compose.dev.yaml up --build
 ```
 
 On macOS, if the repo lives in an iCloud-synced folder (e.g. `~/Documents`) with "Optimize Mac Storage"
