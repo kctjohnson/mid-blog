@@ -24,8 +24,6 @@ RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
     go tool templ generate && \
     CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /out/mid-blog ./cmd/web
-# Empty data dir, copied into the final image owned by the nonroot user
-RUN mkdir -p /out/data
 
 # ---- Dev image: Go toolchain + air for live reload (source is bind-mounted) ----
 FROM golang:${GO_VERSION} AS dev
@@ -37,10 +35,6 @@ CMD ["air", "-c", ".air.docker.toml"]
 # ---- Production image ----
 FROM gcr.io/distroless/static-debian12:nonroot AS prod
 COPY --from=build /out/mid-blog /mid-blog
-COPY --from=build --chown=65532:65532 /out/data /data
-ENV DATABASE_PATH=/data/midblog.db
-# SQLite database lives here; mount a persistent volume at /data to keep data across redeploys
-VOLUME ["/data"]
 EXPOSE 4231
 USER nonroot:nonroot
 ENTRYPOINT ["/mid-blog"]
